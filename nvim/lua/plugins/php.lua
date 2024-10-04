@@ -1,11 +1,12 @@
 return {
   {
-  -- Set Laravel Pint as the default PHP formatter with PHP CS Fixer as a fallback.
+    -- Set Laravel Pint as the default PHP formatter with PHP CS Fixer as a fallback.
     "stevearc/conform.nvim",
     optional = true,
     opts = {
       formatters_by_ft = {
         php = { { "pint", "php_cs_fixer" } },
+        blade = { "blade-formatter" },
       },
     },
   },
@@ -85,5 +86,22 @@ return {
       "hrsh7th/nvim-cmp",
     },
     ft = { "blade", "php" },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        intelephense = {
+          settings = {
+            intelephense = {
+              licenseKey = vim.env.INTELEPHENSE_LICENSE_KEY,
+              files = {
+                maxSize = 5000000,
+              },
+            },
+          },
+        },
+      },
+    },
   },
 }
