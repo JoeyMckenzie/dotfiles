@@ -12,6 +12,15 @@ let
     substituteInPlace $out/SKILL.md --replace-fail "name: onboarding" "name: launchdarkly-onboarding"
   '';
 
+  # Upstream still passes ffmpeg's `-vsync`, removed in ffmpeg 9. Swap in the
+  # modern `-fps_mode` spelling so frame extraction works again.
+  watchSkill = pkgs.runCommand "watch-skill" { } ''
+    cp -r ${inputs.claude-video-skills}/skills/watch $out
+    chmod u+w $out $out/scripts $out/scripts/frames.py
+    substituteInPlace $out/scripts/frames.py \
+      --replace-fail '"-vsync", "vfr",' '"-fps_mode", "vfr",'
+  '';
+
   # Skills vendored from upstream repos, pinned by flake.lock. Each entry picks
   # one skill dir out of its source repo; bump one with:
   #   nix flake update mattpocock-skills
@@ -36,7 +45,7 @@ let
     find-skills = "${inputs.vercel-skills}/skills/find-skills";
     gh-stack = "${inputs.gh-stack-skills}/skills/gh-stack";
     ponytail = "${inputs.ponytail-skills}/skills/ponytail";
-    watch = "${inputs.claude-video-skills}/skills/watch";
+    watch = watchSkill;
 
     flag-and-release-change = "${ld}/feature-flags/flag-and-release-change";
     flag-release = "${ld}/feature-flags/flag-release";
