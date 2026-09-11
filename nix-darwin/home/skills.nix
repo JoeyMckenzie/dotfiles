@@ -21,6 +21,13 @@ let
       --replace-fail '"-vsync", "vfr",' '"-fps_mode", "vfr",'
   '';
 
+  # Upstream ships SKILL.md at the repo root alongside a README, a plugin
+  # manifest, and helper dirs the skill never reads. Take just the skill file.
+  humanizerSkill = pkgs.runCommand "humanizer" { } ''
+    mkdir -p $out
+    cp ${inputs.humanizer-skills}/SKILL.md $out/SKILL.md
+  '';
+
   # Skills vendored from upstream repos, pinned by flake.lock. Each entry picks
   # one skill dir out of its source repo; bump one with:
   #   nix flake update mattpocock-skills
@@ -44,6 +51,7 @@ let
     diagram-design = "${inputs.diagram-design-skills}/skills/diagram-design";
     find-skills = "${inputs.vercel-skills}/skills/find-skills";
     gh-stack = "${inputs.gh-stack-skills}/skills/gh-stack";
+    humanizer = humanizerSkill;
     ponytail = "${inputs.ponytail-skills}/skills/ponytail";
     watch = watchSkill;
 

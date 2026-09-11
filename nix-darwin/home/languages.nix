@@ -13,7 +13,7 @@
     php84
     php84Packages.composer
     ruby
-    python313
+    (python313.withPackages (ps: with ps; [ pip ]))
     uv
   ];
 }

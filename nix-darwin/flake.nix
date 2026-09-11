@@ -67,6 +67,11 @@
       flake = false;
     };
 
+    humanizer-skills = {
+      url = "github:blader/humanizer";
+      flake = false;
+    };
+
     launchdarkly-skills = {
       url = "github:launchdarkly/ai-tooling";
       flake = false;

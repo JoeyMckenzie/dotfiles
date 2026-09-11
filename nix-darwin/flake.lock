@@ -386,6 +386,22 @@
         "type": "github"
       }
     },
+    "humanizer-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788725873,
+        "narHash": "sha256-tC7vHxHDzTRgpsF7i6YnKWhAbrkeclspRJVK1osRE24=",
+        "owner": "blader",
+        "repo": "humanizer",
+        "rev": "9862685f575c65a8247f90369951df1b3416e3d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "blader",
+        "repo": "humanizer",
+        "type": "github"
+      }
+    },
     "jail-nix": {
       "locked": {
         "lastModified": 1776230864,
@@ -684,6 +700,7 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
+        "humanizer-skills": "humanizer-skills",
         "laravel-nvim": "laravel-nvim",
         "launchdarkly-skills": "launchdarkly-skills",
         "lix-module": "lix-module",
