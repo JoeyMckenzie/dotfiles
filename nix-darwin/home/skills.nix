@@ -94,8 +94,14 @@ in
       recursive = true;
     };
 
+    ".grok/skills" = {
+      source = skills;
+      recursive = true;
+    };
+
     ".claude/CLAUDE.md".source = ./agent-instructions.md;
     ".codex/AGENTS.md".source = ./agent-instructions.md;
+    ".grok/AGENTS.md".source = ./agent-instructions.md;
 
     ".claude/agents" = {
       source = ./agents;

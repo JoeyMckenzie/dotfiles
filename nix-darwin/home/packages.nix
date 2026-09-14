@@ -32,6 +32,7 @@
     redis
     claude-code
     opencode
+    grok-build
     herdr
     caddy
     devenv

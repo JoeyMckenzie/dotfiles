@@ -20,6 +20,8 @@
       BUN_INSTALL = "$HOME/.bun";
       OBSIDIAN_VAULTS = "$HOME/vaults";
       LEFTHOOK = "0";
+      # grok ships a self-updater that can't write to its read-only store path.
+      GROK_DISABLE_AUTOUPDATER = "1";
     };
 
     profileExtra = ''
