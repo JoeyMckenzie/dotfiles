@@ -17,11 +17,14 @@ let
     if [ ! -d "$DATADIR/mysql" ]; then
       ${mysqlPkg}/bin/mysqld --initialize-insecure --datadir="$DATADIR"
     fi
+    # MySQL 8 adds ONLY_FULL_GROUP_BY by default; the CDC backfill queries this
+    # stack runs need it off, matching the target database's mode.
     exec ${mysqlPkg}/bin/mysqld \
       --datadir="$DATADIR" \
       --socket=${mysqlSocket} \
       --bind-address=127.0.0.1 \
-      --port=3306
+      --port=3306 \
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
   '';
 
   redisDataDir = "/Users/${username}/.local/share/redis";
