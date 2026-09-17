@@ -100,6 +100,47 @@
         rm -f -- "$tmp"
       }
 
+      # Kill whatever is listening on a port, then verify the port is free.
+      # LISTEN-only on purpose: a bare `lsof -i tcp:3000` also matches clients
+      # connected to that port, so filtering avoids killing e.g. the browser.
+      killport() {
+        local ok=$'\e[32m✓\e[0m'
+        local bad=$'\e[31m✗\e[0m'
+        local port="$1"
+
+        if [[ -z $port ]]; then
+          print -u2 "usage: killport <port>"
+          return 1
+        fi
+
+        _kp_pids() { lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null; }
+
+        local pids=($(_kp_pids))
+        if (( ''${#pids} == 0 )); then
+          printf "  %s port %s already free\n" "$ok" "$port"
+          return 0
+        fi
+
+        # Show what's getting killed — a surprise match should be visible.
+        ps -o pid=,comm= -p ''${pids} | sed 's/^/    /'
+
+        kill ''${pids} 2>/dev/null
+        sleep 1
+
+        local survivors=($(_kp_pids))
+        if (( ''${#survivors} )); then
+          kill -9 ''${survivors} 2>/dev/null
+          sleep 1
+        fi
+
+        local remaining=($(_kp_pids))
+        if (( ''${#remaining} )); then
+          printf "  %s port %s still in use\n" "$bad" "$port"
+          return 1
+        fi
+        printf "  %s port %s freed\n" "$ok" "$port"
+      }
+
       # Single source of truth for the nix-darwin launchd services we own.
       # Passes (scope, label, use_sudo) to the callback for each service.
       _nix_services_each() {
