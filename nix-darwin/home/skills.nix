@@ -54,7 +54,9 @@ let
     humanizer = humanizerSkill;
     ponytail = "${inputs.ponytail-skills}/skills/ponytail";
     watch = watchSkill;
+    typesafe-ai = "${inputs.typesafe-ai}/skills/typesafe-ai";
 
+    # LaunchDarkly stuff
     flag-and-release-change = "${ld}/feature-flags/flag-and-release-change";
     flag-release = "${ld}/feature-flags/flag-release";
     launchdarkly-flag-cleanup = "${ld}/feature-flags/launchdarkly-flag-cleanup";

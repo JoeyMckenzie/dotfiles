@@ -92,6 +92,11 @@
       flake = false;
     };
 
+    typesafe-ai = {
+      url = "github:typesafe-ai/skills";
+      flake = false;
+    };
+
     vercel-skills = {
       url = "github:vercel-labs/skills";
       flake = false;

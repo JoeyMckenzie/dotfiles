@@ -40,6 +40,8 @@
 
       "zai-general-purpose-api-key" = { };
 
+      "typesafe-api-key" = { };
+
     };
 
     templates."secrets.zsh" = {
@@ -49,6 +51,7 @@
         export ZAI_AGENT_TRADER_API_KEY=${config.sops.placeholder."zai-agent-trader-api-key"}
         export ZAI_GENERAL_PURPOSE_API_KEY=${config.sops.placeholder."zai-general-purpose-api-key"}
         export FILAMENT_BLUEPRINT_KEY=${config.sops.placeholder."filament-blueprint-key"}
+        export TYPESAFE_API_KEY=${config.sops.placeholder."typesafe-api-key"}
       '';
     };
   };
