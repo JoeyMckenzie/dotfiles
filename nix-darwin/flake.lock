@@ -715,6 +715,7 @@
         "rust-overlay": "rust-overlay_2",
         "sops-nix": "sops-nix",
         "tuicr": "tuicr",
+        "typesafe-ai": "typesafe-ai",
         "vercel-skills": "vercel-skills",
         "worktrunk": "worktrunk"
       }
@@ -951,6 +952,22 @@
       "original": {
         "owner": "agavra",
         "repo": "tuicr",
+        "type": "github"
+      }
+    },
+    "typesafe-ai": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789191725,
+        "narHash": "sha256-Lh2Y90TFv+njKqo/g5WXEHw0Rk1jQSH5POqKtrvy5kM=",
+        "owner": "typesafe-ai",
+        "repo": "skills",
+        "rev": "65a39f393687675ce170e6094757de20370365b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "typesafe-ai",
+        "repo": "skills",
         "type": "github"
       }
     },
