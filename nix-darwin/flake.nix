@@ -175,14 +175,6 @@
           modules = [
             inputs.lix-module.darwinModules.lixFromNixpkgs
             {
-              # MinIO FOSS edition is in maintenance-only mode upstream and
-              # nixpkgs gates it on knownVulnerabilities. The listed CVEs all
-              # require internet-facing auth/replication/OIDC/LDAP — none of
-              # which apply to our 127.0.0.1-bound dev S3 instance.
-              nixpkgs.config.permittedInsecurePackages = [
-                "minio-2025-10-15T17-29-55Z"
-              ];
-
               nixpkgs.overlays = [
                 rust-overlay.overlays.default
                 inputs.herdr.overlays.default

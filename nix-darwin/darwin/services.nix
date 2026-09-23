@@ -62,28 +62,15 @@ let
       -k "$DATADIR"
   '';
 
-  minioDataDir = "/Users/${username}/.local/share/minio";
-  minioStart = pkgs.writeShellScript "minio-start" ''
-    set -eu
-    DATADIR=${minioDataDir}
-    mkdir -p "$DATADIR"
-    export MINIO_ROOT_USER=minioadmin
-    export MINIO_ROOT_PASSWORD=minioadmin
-    exec ${pkgs.minio}/bin/minio server \
-      --address 127.0.0.1:9000 \
-      --console-address 127.0.0.1:9001 \
-      "$DATADIR"
-  '';
-
   rustfsDataDir = "/Users/${username}/.local/share/rustfs";
   rustfsStart = pkgs.writeShellScript "rustfs-start" ''
     set -eu
     DATADIR=${rustfsDataDir}
     mkdir -p "$DATADIR"
     exec ${pkgs.rustfs}/bin/rustfs server \
-      --address 127.0.0.1:9010 \
+      --address 127.0.0.1:9000 \
       --console-enable \
-      --console-address 127.0.0.1:9011 \
+      --console-address 127.0.0.1:9001 \
       --access-key rustfsadmin \
       --secret-key rustfsadmin \
       "$DATADIR"
@@ -261,16 +248,6 @@ in
           KeepAlive = true;
           StandardOutPath = "/Users/${username}/Library/Logs/postgres.out.log";
           StandardErrorPath = "/Users/${username}/Library/Logs/postgres.err.log";
-        };
-      };
-
-      minio = {
-        serviceConfig = {
-          ProgramArguments = [ "${minioStart}" ];
-          RunAtLoad = true;
-          KeepAlive = true;
-          StandardOutPath = "/Users/${username}/Library/Logs/minio.out.log";
-          StandardErrorPath = "/Users/${username}/Library/Logs/minio.err.log";
         };
       };
 
