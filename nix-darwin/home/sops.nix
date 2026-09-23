@@ -11,10 +11,6 @@
         path = "${config.home.homeDirectory}/intelephense/licence.txt";
       };
 
-      "harlequin-config" = {
-        path = "${config.home.homeDirectory}/.harlequin.toml";
-      };
-
       "lazysql-config" = {
         path = "${config.home.homeDirectory}/.config/lazysql/config.toml";
       };

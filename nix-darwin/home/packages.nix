@@ -21,7 +21,6 @@
     vhs
     mailpit
     lazysql
-    harlequin
     sqlit-tui
     visidata
     csvlens
