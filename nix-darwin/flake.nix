@@ -247,7 +247,6 @@
                 users.${username}.imports = [
                   nixvim.homeModules.nixvim
                   inputs.pi.homeModules.default
-                  inputs.worktrunk.homeModules.default
                   inputs.sops-nix.homeManagerModules.sops
                   ./home
                 ];

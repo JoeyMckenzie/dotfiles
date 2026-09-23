@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./claude-code.nix
     ./packages.nix
     ./programs.nix
     ./shell.nix
@@ -12,6 +13,7 @@
     ./languages.nix
     ./pi.nix
     ./skills.nix
+    ./worktrunk.nix
   ];
 
   home = {

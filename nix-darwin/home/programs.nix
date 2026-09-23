@@ -228,11 +228,6 @@
       enableZshIntegration = true;
     };
 
-    worktrunk = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
     nh = {
       enable = true;
       flake = "${config.home.homeDirectory}/.config/nix-darwin";

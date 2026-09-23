@@ -29,7 +29,6 @@ _:
     "abtop/config.toml".source = ./config/abtop.toml;
     "btop/btop.conf".source = ./config/btop.conf;
     "btop/themes/tokyonight_night.theme".source = ./config/btop-tokyonight-night.theme;
-    "worktrunk/config.toml".source = ./config/worktrunk.toml;
     "opencode/opencode.json".source = ./config/opencode.json;
     "herdr/config.toml".source = ./config/herdr.toml;
     "graphite/aliases".source = ./config/graphite-aliases;

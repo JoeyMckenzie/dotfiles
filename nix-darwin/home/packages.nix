@@ -30,7 +30,6 @@
     mysql84
     postgresql_17
     redis
-    claude-code
     opencode
     grok-build
     herdr
