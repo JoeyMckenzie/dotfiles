@@ -6,7 +6,6 @@
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
 
     secrets = {
-
       "intelephense-licence" = {
         path = "${config.home.homeDirectory}/intelephense/licence.txt";
       };
@@ -38,6 +37,7 @@
 
       "typesafe-api-key" = { };
 
+      "givebutter-api-key" = { };
     };
 
     templates."secrets.zsh" = {
@@ -48,6 +48,7 @@
         export ZAI_GENERAL_PURPOSE_API_KEY=${config.sops.placeholder."zai-general-purpose-api-key"}
         export FILAMENT_BLUEPRINT_KEY=${config.sops.placeholder."filament-blueprint-key"}
         export TYPESAFE_API_KEY=${config.sops.placeholder."typesafe-api-key"}
+        export GIVEBUTTER_API_KEY='${config.sops.placeholder."givebutter-api-key"}'
       '';
     };
   };

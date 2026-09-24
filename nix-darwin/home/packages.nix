@@ -33,7 +33,7 @@
     grok-build
     herdr
     caddy
-    devenv
+    inputs.nixpkgs-devenv.legacyPackages.${pkgs.stdenv.hostPlatform.system}.devenv
     just
     (callPackage ./_pkgs/ldcli.nix { })
     (callPackage ./_pkgs/backlog.nix { })

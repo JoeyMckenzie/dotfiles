@@ -24,7 +24,7 @@
         ];
       };
 
-      model = "claude-fable-5-1[1m]";
+      model = "claude-opus-5-5[1m]";
       enabledPlugins = {
         "last30days@last30days-skill" = true;
         "understand-anything@understand-anything" = true;

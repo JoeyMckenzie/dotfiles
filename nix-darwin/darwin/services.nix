@@ -17,6 +17,10 @@ let
     if [ ! -d "$DATADIR/mysql" ]; then
       ${mysqlPkg}/bin/mysqld --initialize-insecure --datadir="$DATADIR"
     fi
+    # A lock left over from before a reboot can name a PID that's since been
+    # reused by an unrelated process, making mysqld refuse to start forever.
+    # launchd only runs one instance, so any lock here at startup is stale.
+    rm -f ${mysqlSocket}.lock
     # MySQL 8 adds ONLY_FULL_GROUP_BY by default; the CDC backfill queries this
     # stack runs need it off, matching the target database's mode.
     exec ${mysqlPkg}/bin/mysqld \
@@ -189,15 +193,10 @@ in
 
   launchd = {
     daemons.caddy = {
+      # `command` (unlike ProgramArguments) is wrapped in wait4path /nix/store,
+      # so caddy doesn't hit EX_CONFIG at boot before the nix volume mounts.
+      command = "${pkgs.caddy}/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile";
       serviceConfig = {
-        ProgramArguments = [
-          "${pkgs.caddy}/bin/caddy"
-          "run"
-          "--config"
-          "/etc/caddy/Caddyfile"
-          "--adapter"
-          "caddyfile"
-        ];
         RunAtLoad = true;
         KeepAlive = true;
         EnvironmentVariables = {
