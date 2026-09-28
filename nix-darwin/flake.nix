@@ -219,6 +219,17 @@
                   visidata = prev.visidata.overridePythonAttrs (_: {
                     doCheck = false;
                   });
+                  # vhs 0.12.0 cancels the recording context and then hands it
+                  # to Render, so every ffmpeg call fails to start and the error
+                  # is swallowed. It exits 0 without writing a GIF. This is the
+                  # upstream fix from 0.12.1. Drop it once nixpkgs ships 0.12.1.
+                  vhs = prev.vhs.overrideAttrs (old: {
+                    postPatch = (old.postPatch or "") + ''
+                      substituteInPlace evaluator.go \
+                        --replace-fail 'ctx, cancel := context.WithCancel(ctx)' 'recordCtx, cancel := context.WithCancel(ctx)' \
+                        --replace-fail 'ch := v.Record(ctx)' 'ch := v.Record(recordCtx)'
+                    '';
+                  });
                 })
               ];
             }
