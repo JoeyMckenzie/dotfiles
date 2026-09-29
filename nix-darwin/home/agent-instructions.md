@@ -89,7 +89,15 @@ When searching for files or content, prefer these tools:
 
 ## Notes
 
-My notes live in `~/vaults` (also `$OBSIDIAN_VAULTS`) — a git repo holding two
-Obsidian vaults: `personal/` and `work/`. That repo has its own CLAUDE.md with
-the conventions; read it before writing notes. When I ask you to save, look up,
-or organize a note without naming a location, that's where it goes.
+My notes and tasks live in `~/org`, as org-mode files edited with nvim-orgmode
+and org-roam.nvim. When I ask you to save, look up, or organize a note without
+naming a location, that's where it goes.
+
+- `refile.org` is the capture inbox; `work.org` and `personal.org` hold tasks
+  grouped under project headings.
+- `notes/` is the org-roam directory: one note per file, each with a `:ID:`
+  property, linked with `[[id:...][Title]]`. Daily notes go in `notes/daily/`.
+- TODO states are `TODO NEXT WAITING | DONE CANCELLED`.
+
+`~/vaults` holds my old Obsidian notes. It's read-only history: look things
+up there if asked, but don't add to it.

@@ -17,6 +17,7 @@
     ./dap.nix
     ./aerial.nix
     ./laravel.nix
+    ./orgmode.nix
   ];
 
   programs.nixvim = {
