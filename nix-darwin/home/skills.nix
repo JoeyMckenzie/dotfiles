@@ -50,11 +50,13 @@ let
     caveman = "${inputs.caveman-skills}/skills/caveman";
     diagram-design = "${inputs.diagram-design-skills}/skills/diagram-design";
     find-skills = "${inputs.vercel-skills}/skills/find-skills";
+    frontend-design = "${inputs.anthropic-skills}/skills/frontend-design";
     gh-stack = "${inputs.gh-stack-skills}/skills/gh-stack";
     humanizer = humanizerSkill;
     ponytail = "${inputs.ponytail-skills}/skills/ponytail";
     watch = watchSkill;
     typesafe-ai = "${inputs.typesafe-ai}/skills/typesafe-ai";
+    web-design-guidelines = "${inputs.vercel-agent-skills}/skills/web-design-guidelines";
 
     # LaunchDarkly stuff
     flag-and-release-change = "${ld}/feature-flags/flag-and-release-change";
@@ -109,6 +111,12 @@ in
       source = ./agents;
       recursive = true;
     };
+
+    ".claude/harness/agent-harness.template.md".source = ./harness/agent-harness.template.md;
+    ".claude/harness/workflows-README.md".source = ./workflows/README.md;
+
+    ".claude/workflows/eval-agents.js".source = ./workflows/eval-agents.js;
+    ".claude/workflows/verify-feature.js".source = ./workflows/verify-feature.js;
   };
 
   # pi resolves its agent dir from PI_CODING_AGENT_DIR (see pi.nix).

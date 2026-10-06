@@ -10,7 +10,23 @@
     enable = true;
 
     settings = {
+      env = {
+        CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
+      };
+
       hooks = {
+        PreToolUse = [
+          {
+            matcher = "^(Edit|MultiEdit|Write)$";
+            hooks = [
+              {
+                type = "command";
+                command = "bash ${config.home.homeDirectory}/.claude/hooks/anti-comment-vomit.sh";
+              }
+            ];
+          }
+        ];
+
         PostToolUse = [
           {
             matcher = "Edit|MultiEdit|Write";
@@ -45,7 +61,11 @@
     };
   };
 
-  home.file."${config.home.homeDirectory}/.claude/settings.json".enable = lib.mkForce false;
+  home.file = {
+    ".claude/hooks/anti-comment-vomit.sh".source = ./hooks/anti-comment-vomit.sh;
+    "${config.home.homeDirectory}/.claude/settings.json".enable = lib.mkForce false;
+  };
+
   home.activation.claudeCodeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     target="$HOME/.claude/settings.json"
     managed=${config.home.file."${config.home.homeDirectory}/.claude/settings.json".source}

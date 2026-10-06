@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "anthropic-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791208002,
+        "narHash": "sha256-APw+xMKqRvkLnuQxttiyyIeylrIMSxZovQnw3xEl1C4=",
+        "owner": "anthropics",
+        "repo": "skills",
+        "rev": "683bc88e56f3e09ba94f7055977f3d3aa499f202",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "brew-src": {
       "flake": false,
       "locked": {
@@ -766,6 +782,7 @@
     },
     "root": {
       "inputs": {
+        "anthropic-skills": "anthropic-skills",
         "caveman-skills": "caveman-skills",
         "claude-code": "claude-code",
         "claude-video-skills": "claude-video-skills",
@@ -794,6 +811,7 @@
         "sops-nix": "sops-nix",
         "tuicr": "tuicr",
         "typesafe-ai": "typesafe-ai",
+        "vercel-agent-skills": "vercel-agent-skills",
         "vercel-skills": "vercel-skills",
         "worktrunk": "worktrunk"
       }
@@ -1086,6 +1104,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vercel-agent-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787924167,
+        "narHash": "sha256-tTSJf53OQltUfxTH4hdqcnw5ywCjCZP8/JqQ593cyB8=",
+        "owner": "vercel-labs",
+        "repo": "agent-skills",
+        "rev": "063bee94c3f4df8453406c830b0a7df0f2860278",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vercel-labs",
+        "repo": "agent-skills",
         "type": "github"
       }
     },
