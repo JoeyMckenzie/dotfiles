@@ -4,7 +4,7 @@ set -euo pipefail
 json_get() {
     local path="${1#.}"
     PAYLOAD="$PAYLOAD" KEY="$path" perl -MJSON::PP -e '
-        my $d = JSON::PP->new->utf8->decode($ENV{PAYLOAD});
+        my $d = eval { JSON::PP->new->utf8->decode($ENV{PAYLOAD}) } or exit 0;
         my @k = split /\./, $ENV{KEY};
         my $v = $d;
         for (@k) { $v = ref($v) eq "HASH" ? $v->{$_} : undef; last unless defined $v; }
@@ -14,7 +14,7 @@ json_get() {
 
 json_edits() {
     PAYLOAD="$PAYLOAD" WHICH="$1" perl -MJSON::PP -e '
-        my $d = JSON::PP->new->utf8->decode($ENV{PAYLOAD});
+        my $d = eval { JSON::PP->new->utf8->decode($ENV{PAYLOAD}) } or exit 0;
         my $e = $d->{tool_input}{edits};
         exit 0 unless ref($e) eq "ARRAY";
         print join("\n", map { defined($_->{$ENV{WHICH}}) ? $_->{$ENV{WHICH}} : "" } @$e);
@@ -32,14 +32,38 @@ file_path=$(json_get '.tool_input.file_path')
 [[ -z "$file_path" ]] && exit 0
 
 case "$file_path" in
-    */config/*.php) exit 0 ;;
-    */public/index.php) exit 0 ;;
     */tsconfig.json|*/tsconfig.*.json) exit 0 ;;
-    */resources/js/components/ui/*) exit 0 ;;
-    */resources/views/mail/*) exit 0 ;;
 esac
 
+allow_file=""
+dir="${file_path%/*}"
+while [[ -n "$dir" ]]; do
+    if [[ -f "$dir/.ai/rules/anti-comment-allow" ]]; then
+        allow_file="$dir/.ai/rules/anti-comment-allow"
+        break
+    fi
+    [[ -e "$dir/.git" ]] && break
+    dir="${dir%/*}"
+done
+
+allowed_paths=()
+allowed_prefixes=()
+if [[ -n "$allow_file" ]]; then
+    while IFS= read -r entry || [[ -n "$entry" ]]; do
+        case "$entry" in
+            path:*) allowed_paths+=("${entry#path:}") ;;
+            line:*) allowed_prefixes+=("${entry#line:}") ;;
+        esac
+    done <"$allow_file"
+fi
+
+for glob in ${allowed_paths[@]+"${allowed_paths[@]}"}; do
+    # shellcheck disable=SC2053
+    [[ "$file_path" == $glob ]] && exit 0
+done
+
 filename="${file_path##*/}"
+lang=""
 
 case "$filename" in
     *.blade.php) style="blade" ;;
@@ -47,6 +71,7 @@ case "$filename" in
         ext="${filename##*.}"
         [[ "$ext" == "$filename" ]] && exit 0
         ext=$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')
+        lang="$ext"
         case "$ext" in
             go|swift|js|jsx|ts|tsx|mjs|cjs|java|kt|rs|c|h|cc|cpp|hpp|cs|scala|m|mm) style="cfamily" ;;
             json|jsonc|json5) style="cfamily" ;;
@@ -74,9 +99,22 @@ is_allowed_line() {
         '# shellcheck'*|'#shellcheck'*) return 0 ;;
         '// @phpstan-'*|'//@phpstan-'*) return 0 ;;
         '// @vitest-environment'*|'//@vitest-environment'*) return 0 ;;
-        '/* @chisel-'*|'/*@chisel-'*|'/* @end-chisel-'*|'/*@end-chisel-'*) return 0 ;;
-        '// Credit:'*|'//Credit:'*) return 0 ;;
+        '// biome-ignore'*|'//biome-ignore'*|'/* biome-ignore'*) return 0 ;;
+        '/* istanbul ignore'*|'// istanbul ignore'*) return 0 ;;
+        '// MARK:'*) return 0 ;;
+        *'SPDX-License-Identifier:'*) return 0 ;;
+        '# frozen_string_literal:'*) return 0 ;;
+        '# type:'*|'# noqa'*) return 0 ;;
+        '# yaml-language-server:'*) return 0 ;;
     esac
+    case "$lang:$s" in
+        'rs:///'*|'rs://!'*) return 0 ;;
+        'go:// Package '*) return 0 ;;
+    esac
+    local prefix
+    for prefix in ${allowed_prefixes[@]+"${allowed_prefixes[@]}"}; do
+        [[ "$s" == "$prefix"* ]] && return 0
+    done
     return 1
 }
 
@@ -99,7 +137,7 @@ is_doc_typing_line() {
 
 emit_comments() {
     local text="$1" style="$2"
-    local in_block=0 i n line stripped norm
+    local in_block=0 in_template=0 i n line stripped norm ticks
     local -a lines=()
     while IFS= read -r line || [[ -n "$line" ]]; do
         lines+=("$line")
@@ -121,6 +159,18 @@ emit_comments() {
                 continue
             fi
             continue
+        fi
+        if [[ "$style" == "cfamily" ]]; then
+            case "$lang" in
+                js|jsx|ts|tsx|mjs|cjs)
+                    if (( ! in_block )) && { (( in_template )) || [[ "$stripped" != '//'* && "$stripped" != '/*'* ]]; }; then
+                        ticks="${line//\\\`/}"
+                        ticks="${ticks//[!\`]/}"
+                        (( ${#ticks} % 2 )) && in_template=$(( 1 - in_template ))
+                        continue
+                    fi
+                    ;;
+            esac
         fi
         if [[ "$style" == "cfamily" || "$style" == "php" ]]; then
             if (( in_block )); then
@@ -191,7 +241,7 @@ IF THE "WHY" IS WORTH KEEPING, it goes in the nearest CONTEXT.md, or the commit 
 
 A change's story -- what you just fixed, what you tried, a note to your future self -- is not a decision. That belongs in the commit body or the PR, never in the code and never in CONTEXT.md.
 
-ONLY if a comment is genuinely required and not yet allow-listed: do NOT write it and do NOT defer it. STOP all work now, tell the user the exact comment and where it goes, and wait for them to add it by hand (or approve a carve-out in the global hook, home/hooks/anti-comment-vomit.sh in the nix-darwin config). Treat that as blocking work that must actually get done -- not a suggestion.
+ONLY if a comment is genuinely required and not yet allow-listed: do NOT write it and do NOT defer it. STOP all work now, tell the user the exact comment and where it goes, and wait for them to add it by hand (or approve a carve-out: a \`line:\` or \`path:\` entry in the repo's .ai/rules/anti-comment-allow, or a change to the global hook, home/hooks/anti-comment-vomit.sh in the nix-darwin config). Treat that as blocking work that must actually get done -- not a suggestion.
 
 This is rare. Never accumulate comment suggestions or end a response with "you should add these comments" -- if you reach for this more than almost never, you are wrong: delete and move on.
 MSG

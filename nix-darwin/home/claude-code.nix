@@ -63,7 +63,6 @@
 
   home.file = {
     ".claude/hooks/anti-comment-vomit.sh".source = ./hooks/anti-comment-vomit.sh;
-    ".claude/hooks/anti-comment-vomit.test.sh".source = ./hooks/anti-comment-vomit.test.sh;
     "${config.home.homeDirectory}/.claude/settings.json".enable = lib.mkForce false;
   };
 
