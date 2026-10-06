@@ -1,7 +1,7 @@
 export const meta = {
   name: 'verify-feature',
   description: 'Review, attack and verify the current feature stack: code review per layer and security on the whole stack in parallel, each finding challenged, then QA',
-  whenToUse: 'After product-builder hands back a green stack. Pass { ticket, layers?, ui? }: ticket is the Linear ID plus its AC verbatim, layers the stack bottom to top as { branch, base }.',
+  whenToUse: 'After product-builder hands back a green stack. Pass { ticket, layers?, ui?, base? }: ticket is the Linear ID plus its AC verbatim, layers the stack bottom to top as { branch, base }, base the default branch from the facts file (main when omitted).',
   phases: [
     { title: 'Review', detail: 'code-reviewer on each layer, security-expert on the stack' },
     { title: 'Challenge', detail: 'one skeptic per serious finding' },
@@ -11,8 +11,9 @@ export const meta = {
 
 const ticket = args?.ticket
 if (!ticket) throw new Error('verify-feature needs args.ticket: the Linear ID and its acceptance criteria verbatim')
-const layers = args?.layers ?? [{ branch: 'HEAD', base: 'main' }]
-const stack = { branch: layers.at(-1).branch, base: 'main' }
+const base = args?.base ?? 'main'
+const layers = args?.layers ?? [{ branch: 'HEAD', base }]
+const stack = { branch: layers.at(-1).branch, base }
 const ui = args?.ui ?? false
 
 const SERIOUS = ['critical', 'high', 'blocking']
@@ -62,6 +63,15 @@ const QA = {
   required: ['verdict', 'report'],
 }
 
+const DESIGN = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string', enum: ['approved', 'changes requested'] },
+    report: { type: 'string', description: 'The full design review: each deviation with its screenshot, the spec line it breaks, and the fix' },
+  },
+  required: ['verdict', 'report'],
+}
+
 const LENSES = [
   ...layers.map(layer => ({ agentType: 'code-reviewer', label: `review:${layer.branch}`, target: layer })),
   { agentType: 'security-expert', label: 'security', target: stack },
@@ -106,10 +116,10 @@ if (failed.length > 0) {
   return { status: 'review failed', lenses, qa: null, design: null }
 }
 
-const standing = lenses.flatMap(l => [...l.confirmed, ...l.unchallenged.filter(f => SERIOUS.includes(f.severity))])
+const standing = lenses.flatMap(l => [...l.confirmed, ...l.unchallenged.filter(f => CHALLENGED.includes(f.severity))])
 
 if (standing.length > 0) {
-  log(`${standing.length} serious findings stand, so QA waits for the fixes`)
+  log(`${standing.length} findings of medium, should-fix or worse stand, so QA waits for the fixes`)
   return { status: 'fix first', lenses, qa: null, design: null }
 }
 
@@ -126,6 +136,7 @@ const [qa, design] = await parallel([
       agentType: 'product-designer',
       label: 'design review',
       phase: 'Verify',
+      schema: DESIGN,
     })
     : Promise.resolve(null),
 ])
@@ -133,6 +144,11 @@ const [qa, design] = await parallel([
 if (qa?.verdict !== 'signed off') {
   log(`QA did not sign off: ${qa?.verdict ?? 'agent failed'}`)
   return { status: 'qa blocked', lenses, qa, design }
+}
+
+if (ui && design?.verdict !== 'approved') {
+  log(`Design review did not approve: ${design?.verdict ?? 'agent failed'}`)
+  return { status: 'design changes requested', lenses, qa, design }
 }
 
 return { status: 'verified', lenses, qa, design }

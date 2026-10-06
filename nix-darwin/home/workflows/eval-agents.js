@@ -3,7 +3,7 @@ export const meta = {
     description:
         "Plant known defects on throwaway eval/* branches from the repo's .claude/evals/manifest.json, and check that the agents under test catch them",
     whenToUse:
-        'After editing an agent prompt, before trusting it on real work. Needs .claude/evals/manifest.json and .claude/evals/plant.sh in the repo; the README next to this workflow in the nix-darwin config documents the manifest.',
+        'After editing an agent prompt, before trusting it on real work. Needs .claude/evals/manifest.json and .claude/evals/plant.sh in the repo; ~/.config/nix-darwin/nix-darwin/home/workflows/README.md documents both.',
     phases: [
         {
             title: 'Plant',
@@ -61,25 +61,64 @@ const SERIOUS = ['critical', 'high', 'blocking'];
 const PLANTED = {
     type: 'object',
     properties: {
+        ok: { type: 'boolean' },
+        exitCode: { type: 'integer' },
         output: { type: 'string' },
-        manifest: { type: 'string' },
+        base: { type: 'string' },
+        cases: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    name: { type: 'string' },
+                    agentType: { type: 'string' },
+                    branch: { type: 'string' },
+                    ticket: { type: 'string' },
+                    prompt: { type: 'string' },
+                    expect: { type: ['string', 'null'] },
+                },
+                required: ['name', 'agentType', 'expect'],
+            },
+        },
     },
-    required: ['output', 'manifest'],
+    required: ['ok', 'exitCode', 'output', 'base', 'cases'],
+};
+
+const caseProblem = (c) => {
+    if (c.prompt && (c.branch || c.ticket))
+        return 'has both prompt and branch/ticket';
+    if (!c.prompt && !(c.branch && c.ticket))
+        return 'needs either prompt, or branch and ticket';
+    if (c.prompt && c.expect === null)
+        return 'is a control (expect: null) with a prompt; controls must be branch cases';
+    return null;
 };
 
 phase('Plant');
 const planted = await agent(
     'From the repository root, run `.claude/evals/plant.sh "$(jq -r \'.base // "main"\' .claude/evals/manifest.json)"`. ' +
-        'Return its output verbatim as `output`, or its error verbatim if it fails, and the contents of `.claude/evals/manifest.json` verbatim, byte for byte, as `manifest`.',
+        'Set `ok` to whether it exited 0, `exitCode` to its exit code, and `output` to its combined output verbatim. ' +
+        'Then read `.claude/evals/manifest.json` and return its `base` (or "main" when it has none) and its `cases`, copying every field of every case verbatim, ' +
+        'leaving out the fields a case does not have, and keeping `expect: null` as null.',
     { label: 'plant', phase: 'Plant', effort: 'low', schema: PLANTED },
 );
 if (!planted) throw new Error('eval-agents: the plant step returned nothing');
+if (!planted.ok)
+    throw new Error(
+        `eval-agents: .claude/evals/plant.sh failed with exit ${planted.exitCode}, so no case ran:\n${planted.output}`,
+    );
 log(planted.output);
-const manifest = JSON.parse(planted.manifest);
-const base = manifest.base ?? 'main';
-const CASES = manifest.cases;
-if (!Array.isArray(CASES) || CASES.length === 0)
+const base = planted.base;
+const CASES = planted.cases;
+if (CASES.length === 0)
     throw new Error('eval-agents: .claude/evals/manifest.json has no cases');
+const problems = CASES.map((c) => [c.name, caseProblem(c)]).filter(
+    ([, problem]) => problem,
+);
+if (problems.length > 0)
+    throw new Error(
+        `eval-agents: .claude/evals/manifest.json is invalid:\n${problems.map(([name, problem]) => `- "${name}" ${problem}`).join('\n')}`,
+    );
 
 const results = await pipeline(
     CASES,
@@ -130,7 +169,7 @@ const results = await pipeline(
                 `When the report is prose rather than findings, judge whether it states the defect plainly. ` +
                 `caught is true only when a finding identifies the defect itself at the stated severity, not a neighbouring concern.`,
             {
-                label: `grade:${c.branch ?? c.name}`,
+                label: `grade:${c.name}`,
                 phase: 'Grade',
                 schema: GRADE,
                 effort: 'low',

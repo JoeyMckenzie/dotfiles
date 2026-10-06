@@ -5,7 +5,11 @@ project's own `.claude/workflows/<name>.js` wins over the shared one on a
 name clash, so delete a repo's copy once it matches.
 
 - `verify-feature.js`: review, attack and verify a feature stack with the
-  shared agents. Project-agnostic; takes `{ ticket, layers?, ui? }`.
+  shared agents. Project-agnostic; takes `{ ticket, layers?, ui?, base? }`,
+  where `base` is the default branch from the repo's facts file (`main`
+  when omitted). It returns `verified` only when no medium, should-fix or
+  worse finding stands, QA signs off, and, for UI work, design review
+  approves.
 - `eval-agents.js`: plant known defects and grade whether the shared agents
   catch them. The runner is shared; the cases are per repo.
 
@@ -25,7 +29,8 @@ the manifest's `base`. It rebuilds every branch the manifest names from
 `<base>` plus a patch, without touching the working tree or the checked-out
 branch, and prints one `<branch> <commit>` line per branch. The repo owns the
 branch, patch and commit-message list; the runner never applies a patch
-itself.
+itself. When it exits non-zero, the run stops with its output and no case
+runs.
 
 ### `manifest.json`
 
@@ -67,4 +72,7 @@ itself.
 | `cases[].expect` | what the report must catch, for the grader; `null` marks a control, which passes only with no `critical`, `high` or `blocking` finding |
 
 A case has either `prompt`, or `branch` and `ticket`. Two cases may share a
-branch, as two controls on one clean change do.
+branch, as two controls on one clean change do. A control must be a branch
+case: a prompt case returns prose, not findings, so it has no severities to
+check. The runner validates every case before any agent runs and stops,
+naming each invalid case, when one breaks these rules.
