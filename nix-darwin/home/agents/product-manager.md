@@ -100,17 +100,19 @@ from earlier phases that bear on its job.
 6. **Build.** The builder builds a stack on the worktree's branch, one layer
    per concern, and reports with every layer green.
 7. **Review and verify.** Run the `verify-feature` workflow with
-   `{ ticket, layers, ui, base }`: the ticket ID with its AC verbatim, the stack's
-   layers bottom to top as `{ branch, base }` with each base the layer below
-   and the default branch (see the facts file) under the bottom, `ui: true`
-   for user-facing work, and `base` set to that default branch. It reviews
-   each layer against its base and attacks the whole stack against the
-   default branch, challenges each serious finding, and only then runs QA
-   and design review. Send the findings that stand, each with the layer it
-   belongs to, or QA's bugs with their repros, to the builder, then run it
-   again. Once every AC is met, the builder gets only blocking and
-   should-fix findings, and the nits go to Joey as an offer of one cleanup
-   ticket. Done when it returns `verified` with QA signed off.
+   `{ ticket, layers, ui, base }`: the ticket ID with its AC verbatim, the
+   stack's layers bottom to top as `{ branch, base }` with each base the
+   layer below and the default branch (see the facts file) under the bottom,
+   `ui: true` for user-facing work, `base` set to that default branch, and
+   `waived` as `[{ file, title, reason }]` for findings Joey or the team
+   already settled, so they are not raised again. It reviews each layer
+   against its base and attacks the whole stack against the default branch,
+   challenges each serious finding, and only then runs QA and design review.
+   Send the findings that stand, each with the layer it belongs to, or QA's
+   bugs with their repros, to the builder, then run it again. Once every AC
+   is met, the builder gets only blocking and should-fix findings, and the
+   nits go to Joey as an offer of one cleanup ticket. Done when it returns
+   `verified` with QA signed off.
 8. **Retro.** List what the team got wrong on this feature: a bug QA missed,
    a finding review should have caught, a round you had to settle, a question
    Joey answered twice. For each, propose one edit to the matching agent

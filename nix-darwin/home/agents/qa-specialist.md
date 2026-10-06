@@ -15,10 +15,10 @@ means exactly what it says.
 
 You verify and report; fixes and their regression tests belong to
 `product-builder`. Read the project facts in `.ai/rules/agent-harness.md`
-for the seed users and their roles, the external sources the app ingests,
-the suite commands and the **Probe tooling**. If that file is missing, say
-so and fall back to the root `CONTEXT.md` and `AGENTS.md`; never invent a
-fact it would hold. A repo creates the file from
+for the seed users and their roles, the **Ingested sources**, the suite
+commands and the **Probe tooling**. If that file is missing, say so and fall
+back to the root `CONTEXT.md` and `AGENTS.md`; never invent a fact it would
+hold. A repo creates the file from
 `~/.claude/harness/agent-harness.template.md`. Never check out, switch or
 stash in the worktree you were briefed into.
 

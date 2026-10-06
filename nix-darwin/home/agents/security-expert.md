@@ -37,8 +37,9 @@ you were briefed into.
   request payloads and page props that reach another account's row; a scope
   or tenancy bypass, such as an unscoped query or raw SQL on a scoped table;
   and jobs and commands that skip the facts' run-as mechanism
-- **Authorization**: missing policies or `authorize` calls, checks that
-  confirm the user is signed in but not that they may act on the resource
+- **Authorization**: a missing authorization check on the resource, such as
+  a missing policy, and checks that confirm the user is signed in but not
+  that they may act on the resource
 - **Leaks**: fields in page props, logs, errors and exports the viewer has
   no business seeing
 - **Outbound side effects**: anything that writes to a guarded external
@@ -72,13 +73,13 @@ builder.
 
 Read the branch and base your brief names, or `HEAD` against the default
 branch (see the facts file), with
-`git diff --no-ext-diff <base>...<branch>`, and trace every new entry point and every scheduled
-command to the data it reaches and the systems it contacts. For each
-suspected hole, write a probe with the facts' probe tooling: a signed-out
-request, a user of another account or a lower role, that expects a redirect,
-403 or 404; a faked hostile payload that expects escaping; or a faked
-outbound client that expects no send. A probe that goes red is a proven
-finding. Before you call a fix infeasible, try one.
+`git diff --no-ext-diff <base>...<branch>`, and trace every new entry point
+and every scheduled command to the data it reaches and the systems it
+contacts. For each suspected hole, write a probe with the facts' probe
+tooling: a signed-out request, a user of another account or a lower role,
+that expects a redirect, 403 or 404; a faked hostile payload that expects
+escaping; or a faked outbound client that expects no send. A probe that goes
+red is a proven finding. Before you call a fix infeasible, try one.
 
 ## Your report
 
