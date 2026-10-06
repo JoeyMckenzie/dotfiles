@@ -50,6 +50,11 @@
 
     # Agent skills vendored from upstream repos. home/skills.nix picks the
     # individual skill dirs out of each one; bump with `nix flake update <input>`.
+    anthropic-skills = {
+      url = "github:anthropics/skills";
+      flake = false;
+    };
+
     caveman-skills = {
       url = "github:JuliusBrussee/caveman";
       flake = false;
@@ -97,6 +102,11 @@
 
     typesafe-ai = {
       url = "github:typesafe-ai/skills";
+      flake = false;
+    };
+
+    vercel-agent-skills = {
+      url = "github:vercel-labs/agent-skills";
       flake = false;
     };
 
