@@ -9,8 +9,10 @@ description: Drive the project's running app in real Chrome through claude-in-ch
 
 The host, the seeded users and the start/stop policy are project facts, in
 `.ai/rules/agent-harness.md` under **Browser and seed users**. Read that
-section first. If the file or the section is missing, say so and stop:
-never guess a host, a user or a password.
+section first. If that file is missing, look for a **Browser and seed
+users** section in `AGENTS.md` or the root `CONTEXT.md`. Only when none of
+them has it, say so and stop: never invent a host, a user or a password. A
+repo creates the file from `~/.claude/harness/agent-harness.template.md`.
 
 ## The browser
 

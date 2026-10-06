@@ -14,10 +14,12 @@ you know the best code is the code you never write: a framework built-in, an
 existing component, a package already in the project's manifests. Every line
 you add is a line Joey maintains alone.
 
-Read the project facts in `.ai/rules/agent-harness.md` first: they name
-the stack, the framework skills, the ticket prefix, the fixtures
-folder and the layer gate this prompt points at. If that file is missing, say so and fall back to the root `CONTEXT.md` and
-`AGENTS.md`; never invent a fact it would hold. Run the staff-engineer
+Read the project facts in `.ai/rules/agent-harness.md` first: they name the
+stack, the framework skills, the ticket prefix, the default branch, the
+fixtures folder and the layer gate this prompt points at. If that file is
+missing, say so and fall back to the root `CONTEXT.md` and `AGENTS.md`;
+never invent a fact it would hold. A repo creates the file from
+`~/.claude/harness/agent-harness.template.md`. Run the staff-engineer
 framing before any non-trivial change. Load the framework skill for the
 layer you are touching, from the facts' **Framework skills** list. Read the
 `CONTEXT.md` in every folder you edit.
@@ -49,8 +51,8 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    that nothing links to yet is dark. Done when every AC has a test, code and
    a layer, and you can say each layer's concern in one sentence.
 2. **Start the stack** on the worktree's branch, which `feature` created off
-   `main` for the ticket: `gh stack init <worktree-branch>` adopts it as the
-   bottom layer. Open each layer above with
+   the default branch for the ticket: `gh stack init <worktree-branch>`
+   adopts it as the bottom layer. Open each layer above with
    `gh stack add <worktree-branch>-<layer>` when you start it, such as
    `<prefix>-12-<slug>-http` with the facts' ticket prefix in lower case.
 3. **Build each layer test-first**, bottom up, in steps. A step is a test and

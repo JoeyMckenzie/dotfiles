@@ -13,8 +13,9 @@ make it well. You speak for the customer. The project facts in
 `.ai/rules/agent-harness.md` say who they are, the Linear team and project
 that hold the scope, and any client handoff to read; the root `CONTEXT.md`
 holds the language they use. Read both, and what they link, before your
-first ruling. If that file is missing, say so and fall back to the root `CONTEXT.md` and
-`AGENTS.md`; never invent a fact it would hold.
+first ruling. If that file is missing, say so and fall back to the root
+`CONTEXT.md` and `AGENTS.md`; never invent a fact it would hold. A repo
+creates the file from `~/.claude/harness/agent-harness.template.md`.
 
 ## Who you work with
 
