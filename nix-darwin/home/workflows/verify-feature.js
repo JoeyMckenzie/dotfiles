@@ -1,7 +1,7 @@
 export const meta = {
   name: 'verify-feature',
   description: 'Review, attack and verify the current feature stack: code review per layer and security on the whole stack in parallel, each finding challenged, then QA',
-  whenToUse: 'After product-builder hands back a green stack. Pass { ticket, layers?, ui?, base? }: ticket is the Linear ID plus its AC verbatim, layers the stack bottom to top as { branch, base }, base the default branch from the facts file (main when omitted).',
+  whenToUse: 'After product-builder hands back a green stack. Pass { ticket, layers?, ui?, base?, waived? }: ticket is the Linear ID plus its AC verbatim, layers the stack bottom to top as { branch, base }, base the default branch from the facts file (main when omitted), waived the findings the team settled as [{ file, title, reason }].',
   phases: [
     { title: 'Review', detail: 'code-reviewer on each layer, security-expert on the stack' },
     { title: 'Challenge', detail: 'one skeptic per serious finding' },
@@ -15,9 +15,14 @@ const base = args?.base ?? 'main'
 const layers = args?.layers ?? [{ branch: 'HEAD', base }]
 const stack = { branch: layers.at(-1).branch, base }
 const ui = args?.ui ?? false
+const waived = args?.waived ?? []
 
 const SERIOUS = ['critical', 'high', 'blocking']
 const CHALLENGED = [...SERIOUS, 'medium', 'should-fix']
+const SEVERITY_ORDER = ['blocking', 'critical', 'high', 'should-fix', 'medium', 'low', 'nit']
+const bySeverity = (a, b) => SEVERITY_ORDER.indexOf(a.severity) - SEVERITY_ORDER.indexOf(b.severity)
+const sameText = (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase()
+const isWaived = f => waived.some(w => w.file === f.file && sameText(w.title, f.title))
 const MAX_CHALLENGES_PER_LENS = 3
 
 const FINDINGS = {
@@ -78,14 +83,17 @@ const LENSES = [
 ]
 
 const ticketBrief = `Ticket and acceptance criteria:\n${ticket}`
-const briefing = target => `${ticketBrief}\n\nReview ${range(target)}.`
+const waivedBrief = waived.length === 0
+  ? ''
+  : `\n\nThe team settled these findings; do not re-raise them:\n${waived.map(w => `- ${w.file}: ${w.title} (${w.reason})`).join('\n')}`
+const briefing = target => `${ticketBrief}\n\nReview ${range(target)}.${waivedBrief}`
 
 const lenses = await pipeline(
   LENSES,
   lens => agent(briefing(lens.target), { agentType: lens.agentType, label: lens.label, phase: 'Review', schema: FINDINGS }),
   async (report, lens) => {
     if (!report) return { lens: lens.label, verdict: 'agent failed', failed: true, confirmed: [], refuted: [], unchallenged: [] }
-    const serious = report.findings.filter(f => CHALLENGED.includes(f.severity))
+    const serious = report.findings.filter(f => CHALLENGED.includes(f.severity)).sort(bySeverity)
     const challenged = serious.slice(0, MAX_CHALLENGES_PER_LENS)
     const unchallenged = report.findings.filter(f => !challenged.includes(f))
     if (serious.length > challenged.length) {
@@ -116,7 +124,9 @@ if (failed.length > 0) {
   return { status: 'review failed', lenses, qa: null, design: null }
 }
 
-const standing = lenses.flatMap(l => [...l.confirmed, ...l.unchallenged.filter(f => CHALLENGED.includes(f.severity))])
+const standing = lenses
+  .flatMap(l => [...l.confirmed, ...l.unchallenged.filter(f => CHALLENGED.includes(f.severity))])
+  .filter(f => !isWaived(f))
 
 if (standing.length > 0) {
   log(`${standing.length} findings of medium, should-fix or worse stand, so QA waits for the fixes`)
@@ -146,8 +156,13 @@ if (qa?.verdict !== 'signed off') {
   return { status: 'qa blocked', lenses, qa, design }
 }
 
-if (ui && design?.verdict !== 'approved') {
-  log(`Design review did not approve: ${design?.verdict ?? 'agent failed'}`)
+if (ui && !design) {
+  log('Design review returned nothing')
+  return { status: 'design review failed', lenses, qa, design }
+}
+
+if (ui && design.verdict !== 'approved') {
+  log(`Design review did not approve: ${design.verdict}`)
   return { status: 'design changes requested', lenses, qa, design }
 }
 

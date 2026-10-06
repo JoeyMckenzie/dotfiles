@@ -1,6 +1,7 @@
 # Shared workflows
 
-Home-manager links each `.js` file here into `~/.claude/workflows/`. A
+Home-manager links each `.js` file here into `~/.claude/workflows/`, and
+this README to `~/.claude/harness/workflows-README.md`. A
 project's own `.claude/workflows/<name>.js` wins over the shared one on a
 name clash, so delete a repo's copy once it matches.
 
@@ -9,7 +10,9 @@ name clash, so delete a repo's copy once it matches.
   where `base` is the default branch from the repo's facts file (`main`
   when omitted). It returns `verified` only when no medium, should-fix or
   worse finding stands, QA signs off, and, for UI work, design review
-  approves.
+  approves. Pass `waived` as `[{ file, title, reason }]` for findings the
+  team has settled: each lens's brief lists them as not to be re-raised, and
+  a finding with the same file and title (ignoring case) no longer holds QA.
 - `eval-agents.js`: plant known defects and grade whether the shared agents
   catch them. The runner is shared; the cases are per repo.
 

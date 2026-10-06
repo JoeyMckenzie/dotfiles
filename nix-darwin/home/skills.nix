@@ -113,6 +113,7 @@ in
     };
 
     ".claude/harness/agent-harness.template.md".source = ./harness/agent-harness.template.md;
+    ".claude/harness/workflows-README.md".source = ./workflows/README.md;
 
     ".claude/workflows/eval-agents.js".source = ./workflows/eval-agents.js;
     ".claude/workflows/verify-feature.js".source = ./workflows/verify-feature.js;

@@ -3,7 +3,7 @@ export const meta = {
     description:
         "Plant known defects on throwaway eval/* branches from the repo's .claude/evals/manifest.json, and check that the agents under test catch them",
     whenToUse:
-        'After editing an agent prompt, before trusting it on real work. Needs .claude/evals/manifest.json and .claude/evals/plant.sh in the repo; ~/.config/nix-darwin/nix-darwin/home/workflows/README.md documents both.',
+        'After editing an agent prompt, before trusting it on real work. Needs .claude/evals/manifest.json and .claude/evals/plant.sh in the repo; ~/.claude/harness/workflows-README.md documents both.',
     phases: [
         {
             title: 'Plant',
@@ -89,7 +89,7 @@ const caseProblem = (c) => {
         return 'has both prompt and branch/ticket';
     if (!c.prompt && !(c.branch && c.ticket))
         return 'needs either prompt, or branch and ticket';
-    if (c.prompt && c.expect === null)
+    if (c.prompt && !c.expect)
         return 'is a control (expect: null) with a prompt; controls must be branch cases';
     return null;
 };
