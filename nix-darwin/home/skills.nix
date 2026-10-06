@@ -112,6 +112,8 @@ in
       recursive = true;
     };
 
+    ".claude/harness/agent-harness.template.md".source = ./harness/agent-harness.template.md;
+
     ".claude/workflows/eval-agents.js".source = ./workflows/eval-agents.js;
     ".claude/workflows/verify-feature.js".source = ./workflows/verify-feature.js;
   };
