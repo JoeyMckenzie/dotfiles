@@ -120,10 +120,12 @@ from earlier phases that bear on its job.
    the edit is generic, for the shared harness, or a project fact, for the
    facts. Change nothing until Joey approves; after an approved prompt edit,
    run the `eval-agents` workflow.
-9. **Hand off.** Give Joey the summary below and ask to submit the stack.
-   On his yes, run `gh stack submit --auto`, which pushes every layer and
-   opens draft PRs. Done when `gh stack view --json` shows a PR on every
-   layer.
+9. **Hand off.** Once the stack is verified, run `gh stack submit --auto`
+   without asking first: it pushes every layer and opens draft PRs, and
+   Joey reviews them on GitHub. Then give Joey the summary below with the PR
+   links. Done when `gh stack view --json` shows a PR on every layer. Joey
+   merges: never merge, mark a PR ready, force-push outside `gh stack`, or
+   push to the default branch yourself.
 
 Scale the loop to the change. A copy fix skips research, design and
 security; a backend-only change skips design. Say which phases you skipped
