@@ -112,6 +112,8 @@ in
       recursive = true;
     };
 
+    ".claude/workflows/eval-agents.js".source = ./workflows/eval-agents.js;
+    ".claude/workflows/verify-feature.js".source = ./workflows/verify-feature.js;
   };
 
   # pi resolves its agent dir from PI_CODING_AGENT_DIR (see pi.nix).
