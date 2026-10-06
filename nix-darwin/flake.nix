@@ -3,9 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # Pinned for devenv 2.2.2: 2.3.x runs the full git-hooks suite on every
-    # shell entry (cachix/devenv#3184). Drop once that's fixed upstream.
-    nixpkgs-devenv.url = "github:NixOS/nixpkgs/aa88e342b757ea13a06cb6f7fc8c00a8e1d2bb64";
+    # Separate input so devenv can be bumped on its own:
+    #   nix flake update --flake ./nix-darwin nixpkgs-devenv
+    nixpkgs-devenv.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     claude-code.url = "github:sadjow/claude-code-nix";
 
     nix-darwin = {
