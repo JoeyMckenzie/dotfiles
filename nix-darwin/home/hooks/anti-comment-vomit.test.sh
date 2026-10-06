@@ -16,12 +16,24 @@ line:/* @chisel-
 line:/* @end-chisel-
 line:// Credit:
 ALLOW
+mkdir -p "$REPO/nested/.git"
+
+allow_repo() {
+    local dir
+    dir=$(mktemp -d "$REPO/allow.XXXXXX")
+    mkdir -p "$dir/.git" "$dir/.ai/rules"
+    printf '%b' "$1" >"$dir/.ai/rules/anti-comment-allow"
+    printf '%s' "$dir"
+}
+EMPTY=$(allow_repo 'line:\npath:\n')
+CATCHALL=$(allow_repo 'line://\nline:#\nline:/*\nline:*\npath:*\npath:**\n')
+CRLF=$(allow_repo 'line:// Credit:\r\npath:*/vendored/*\r\n')
 pass=0
 fail=0
 
 check() {
     local name="$1" want="$2" payload="$3"
-    printf '%s' "$payload" | bash "$HOOK" >/dev/null 2>&1
+    printf '%s' "$payload" | perl -e 'alarm 10; exec @ARGV' bash "$HOOK" >/dev/null 2>&1
     local got=$?
     if [[ "$got" == "$want" ]]; then
         printf 'ok   %-46s (exit %s)\n' "$name" "$got"
@@ -108,6 +120,25 @@ edit "yaml: language server"        0 "$R/ci.yaml" 'a: 1' $'# yaml-language-serv
 edit "ts: // in template literal"   0 "$R/resources/js/a.ts" 'const a = 1;' $'const s = `\n// not a comment\n`;\nconst a = 1;'
 edit "ts: // after template closes" 2 "$R/resources/js/a.ts" 'const a = 1;' $'const s = `\nx\n`;\n// explains\nconst a = 1;'
 edit "ts: prose in block after template" 2 "$R/resources/js/a.ts" 'const a = 1;' $'const s = `x`;\n/*\n explains\n*/\nconst a = 1;'
+edit "ts: fragment closes template above" 2 "$R/resources/js/a.ts" 'const a = 1;' $'x`;\n// explains'
+edit "ts: backtick in string"       2 "$R/resources/js/a.ts" 'const a = 1;' $'const t = "`";\n// explains'
+edit "ts: backtick in trailing comment" 2 "$R/resources/js/a.ts" 'const a = 1;' $'f(); // don`t\n// explains'
+edit "ts: backtick in regex"        2 "$R/resources/js/a.ts" 'const a = 1;' $'const r = /`/;\n// explains'
+edit "ts: escaped backslash before tick" 2 "$R/resources/js/a.ts" 'const a = 1;' $'const s = `a\\\\`;\n// explains'
+edit "py: # type: outside python"   2 "$R/a.sh" 'a=1' $'# type: ignore\na=1'
+edit "spdx mid-comment is prose"    2 "$R/src/a.ts" 'const a = 1;' $'// see SPDX-License-Identifier: MIT\nconst a = 1;'
+edit "relative path a.ts"           2 "a.ts" 'const a = 1;' $'// explains\nconst a = 1;'
+edit "relative path src/a.ts"       2 "src/a.ts" 'const a = 1;' $'// explains\nconst a = 1;'
+edit "allow file above .git ignored" 2 "$REPO/nested/config/session.php" $'return [\n];' $'return [\n    // explains a thing\n];'
+edit "empty line:/path: ignored"    2 "$EMPTY/app/Foo.php" $'class Foo {\n}' $'class Foo {\n    // explains\n}'
+edit "catch-all line: refused"      2 "$CATCHALL/app/Foo.php" $'class Foo {\n}' $'class Foo {\n    // explains\n}'
+edit "catch-all # refused"          2 "$CATCHALL/bin/x.sh" 'echo hi' $'# explains\necho hi'
+edit "catch-all /* refused"         2 "$CATCHALL/app/Foo.php" $'class Foo {\n}' $'class Foo {\n    /* explains */\n}'
+edit "crlf allow file line:"        0 "$CRLF/resources/js/a.ts" 'const a = 1;' $'// Credit: https://example.com/\nconst a = 1;'
+edit "crlf allow file path:"        0 "$CRLF/src/vendored/a.ts" 'const a = 1;' $'// explains\nconst a = 1;'
+edit "edit allow file blocked"      2 "$REPO/.ai/rules/anti-comment-allow" 'line:// Credit:' $'line:// Credit:\nline:// x'
+write "write allow file blocked"    2 "$REPO/.ai/rules/anti-comment-allow" 'line://'
+check "multiedit allow file blocked" 2 "{\"tool_name\":\"MultiEdit\",\"tool_input\":{\"file_path\":\"$REPO/.ai/rules/anti-comment-allow\",\"edits\":[{\"old_string\":\"a\",\"new_string\":\"b\"}]}}"
 edit "no extension"                 0 "$R/Makefile" 'a:' $'# explains\na:'
 
 write "write: new file with comment" 2 "$R/app/Nope.php" $'<?php\n// explains\n'

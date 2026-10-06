@@ -32,27 +32,54 @@ file_path=$(json_get '.tool_input.file_path')
 [[ -z "$file_path" ]] && exit 0
 
 case "$file_path" in
+    */.ai/rules/anti-comment-allow|.ai/rules/anti-comment-allow)
+        echo "COMMENT ALLOW-LIST BLOCKED -- ${tool_name} on ${file_path}. Only the user edits .ai/rules/anti-comment-allow, by hand." >&2
+        exit 2
+        ;;
+esac
+
+case "$file_path" in
     */tsconfig.json|*/tsconfig.*.json) exit 0 ;;
 esac
 
 allow_file=""
-dir="${file_path%/*}"
+if [[ "$file_path" == */* ]]; then dir="${file_path%/*}"; else dir="."; fi
 while [[ -n "$dir" ]]; do
     if [[ -f "$dir/.ai/rules/anti-comment-allow" ]]; then
         allow_file="$dir/.ai/rules/anti-comment-allow"
         break
     fi
     [[ -e "$dir/.git" ]] && break
+    [[ "$dir" != */* ]] && break
     dir="${dir%/*}"
 done
+
+trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    printf '%s' "${s%"${s##*[![:space:]]}"}"
+}
 
 allowed_paths=()
 allowed_prefixes=()
 if [[ -n "$allow_file" ]]; then
     while IFS= read -r entry || [[ -n "$entry" ]]; do
+        entry="${entry%$'\r'}"
         case "$entry" in
-            path:*) allowed_paths+=("${entry#path:}") ;;
-            line:*) allowed_prefixes+=("${entry#line:}") ;;
+            path:*)
+                value=$(trim "${entry#path:}")
+                case "$value" in
+                    ''|'*'|'**'|'/*'|'/**'|'*/*'|'**/*') ;;
+                    *) allowed_paths+=("$value") ;;
+                esac
+                ;;
+            line:*)
+                value=$(trim "${entry#line:}")
+                case "$value" in
+                    ''|'/'|'//'|'#'|'/*'|'/**'|'*') ;;
+                    *) allowed_prefixes+=("$value") ;;
+                esac
+                ;;
         esac
     done <"$allow_file"
 fi
@@ -102,14 +129,15 @@ is_allowed_line() {
         '// biome-ignore'*|'//biome-ignore'*|'/* biome-ignore'*) return 0 ;;
         '/* istanbul ignore'*|'// istanbul ignore'*) return 0 ;;
         '// MARK:'*) return 0 ;;
-        *'SPDX-License-Identifier:'*) return 0 ;;
+        '// SPDX-License-Identifier:'*|'# SPDX-License-Identifier:'*|'/* SPDX-License-Identifier:'*) return 0 ;;
         '# frozen_string_literal:'*) return 0 ;;
-        '# type:'*|'# noqa'*) return 0 ;;
+        '# noqa'*) return 0 ;;
         '# yaml-language-server:'*) return 0 ;;
     esac
     case "$lang:$s" in
         'rs:///'*|'rs://!'*) return 0 ;;
         'go:// Package '*) return 0 ;;
+        'py:# type:'*) return 0 ;;
     esac
     local prefix
     for prefix in ${allowed_prefixes[@]+"${allowed_prefixes[@]}"}; do
@@ -136,8 +164,8 @@ is_doc_typing_line() {
 }
 
 emit_comments() {
-    local text="$1" style="$2"
-    local in_block=0 in_template=0 i n line stripped norm ticks
+    local text="$1" style="$2" track_templates="${3:-1}"
+    local in_block=0 in_template=0 i n line stripped norm ticks out=""
     local -a lines=()
     while IFS= read -r line || [[ -n "$line" ]]; do
         lines+=("$line")
@@ -150,12 +178,12 @@ emit_comments() {
         if [[ "$style" == "blade" ]]; then
             if (( in_block )); then
                 [[ "$line" == *'--}}'* || "$line" == *'-->'* ]] && in_block=0
-                printf 'B\t%s\n' "$norm"
+                out+=$'B\t'"$norm"$'\n'
                 continue
             fi
             if [[ "$stripped" == '{{--'* || "$stripped" == '<!--'* ]]; then
                 [[ "$line" != *'--}}'* && "$line" != *'-->'* ]] && in_block=1
-                printf 'B\t%s\n' "$norm"
+                out+=$'B\t'"$norm"$'\n'
                 continue
             fi
             continue
@@ -163,7 +191,7 @@ emit_comments() {
         if [[ "$style" == "cfamily" ]]; then
             case "$lang" in
                 js|jsx|ts|tsx|mjs|cjs)
-                    if (( ! in_block )) && { (( in_template )) || [[ "$stripped" != '//'* && "$stripped" != '/*'* ]]; }; then
+                    if (( track_templates && ! in_block )) && { (( in_template )) || [[ "$stripped" != '//'* && "$stripped" != '/*'* ]]; }; then
                         ticks="${line//\\\`/}"
                         ticks="${ticks//[!\`]/}"
                         (( ${#ticks} % 2 )) && in_template=$(( 1 - in_template ))
@@ -176,19 +204,19 @@ emit_comments() {
             if (( in_block )); then
                 [[ "$line" == *'*/'* ]] && in_block=0
                 is_doc_typing_line "$stripped" && continue
-                printf 'B\t%s\n' "$norm"
+                out+=$'B\t'"$norm"$'\n'
                 continue
             fi
             if [[ "$stripped" == '/*'* ]]; then
                 [[ "$line" != *'*/'* ]] && in_block=1
                 is_allowed_line "$stripped" && continue
                 is_doc_typing_line "$stripped" && continue
-                printf 'B\t%s\n' "$norm"
+                out+=$'B\t'"$norm"$'\n'
                 continue
             fi
             if [[ "$stripped" == '//'* ]]; then
                 is_allowed_line "$stripped" && continue
-                printf 'L\t%s\n' "$norm"
+                out+=$'L\t'"$norm"$'\n'
                 continue
             fi
         fi
@@ -198,11 +226,16 @@ emit_comments() {
                     continue
                 fi
                 is_allowed_line "$stripped" && continue
-                printf 'L\t%s\n' "$norm"
+                out+=$'L\t'"$norm"$'\n'
                 continue
             fi
         fi
     done
+    if (( in_template )); then
+        emit_comments "$text" "$style" 0
+        return
+    fi
+    printf '%s' "$out"
 }
 
 case "$tool_name" in
@@ -241,7 +274,7 @@ IF THE "WHY" IS WORTH KEEPING, it goes in the nearest CONTEXT.md, or the commit 
 
 A change's story -- what you just fixed, what you tried, a note to your future self -- is not a decision. That belongs in the commit body or the PR, never in the code and never in CONTEXT.md.
 
-ONLY if a comment is genuinely required and not yet allow-listed: do NOT write it and do NOT defer it. STOP all work now, tell the user the exact comment and where it goes, and wait for them to add it by hand (or approve a carve-out: a \`line:\` or \`path:\` entry in the repo's .ai/rules/anti-comment-allow, or a change to the global hook, home/hooks/anti-comment-vomit.sh in the nix-darwin config). Treat that as blocking work that must actually get done -- not a suggestion.
+ONLY if a comment is genuinely required and not yet allow-listed: do NOT write it and do NOT defer it. STOP all work now, tell the user the exact comment and where it goes, and wait for them to add it by hand (or approve a carve-out: a \`line:\` or \`path:\` entry in the repo's .ai/rules/anti-comment-allow, which only the user edits, by hand, or a change to the global hook, home/hooks/anti-comment-vomit.sh in the nix-darwin config). Treat that as blocking work that must actually get done -- not a suggestion.
 
 This is rare. Never accumulate comment suggestions or end a response with "you should add these comments" -- if you reach for this more than almost never, you are wrong: delete and move on.
 MSG

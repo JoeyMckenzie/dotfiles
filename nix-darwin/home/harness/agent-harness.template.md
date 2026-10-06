@@ -44,6 +44,8 @@ behalf: `<rule>`. A feature that would cross it is a crossroads.
 | --- | --- | --- |
 | `<host or service>` | `<read-only / never written / ask Joey>` | `<hook name, or "prompt only">` |
 
+Ingested sources: `<the external sources the app reads unattended, such as feeds, scraped pages or upstream APIs, and what a bad response from each looks like>`
+
 ## Standing acceptance criteria
 
 Every ticket's AC covers: `<the cases every ticket must cover, such as empty, error, signed-out, no-permission, nothing sent without a person>`
@@ -130,12 +132,17 @@ database.
 ## Anti-comment allow-list
 
 The global anti-comment hook reads optional per-repo exclusions from
-`.ai/rules/anti-comment-allow`. Each non-blank line not starting with `#`
-is either:
+`.ai/rules/anti-comment-allow`. Only the user edits that file, by hand; the
+hook blocks agents from writing to it. It applies to files below it up to
+the first folder holding `.git`. Each line is either:
 
 - `path:<glob>`: skip files whose path matches the glob, such as
   `path:*/resources/js/components/ui/*`
 - `line:<prefix>`: allow comment lines that start with the prefix, after
   leading whitespace, such as `line:// Credit:`
+
+Any other line is ignored. Empty entries and catch-alls (`line:` of `/`,
+`//`, `/*`, `/**`, `#` or `*`; `path:` of `*`, `**`, `/*`, `/**`, `*/*` or
+`**/*`) are ignored too, so one entry cannot switch the hook off.
 
 `<"none", or the reason for each entry>`
