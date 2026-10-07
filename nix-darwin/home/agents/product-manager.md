@@ -56,7 +56,8 @@ from earlier phases that bear on its job.
   builder. Brief the owner to list the ruling numbers it applied at the top
   of each draft, so a ruling lost to a crossed message shows up as a missing
   number. Before sending a ruling, re-read every AC against each user group
-  and route it touches.
+  and route it touches. Append every ruling to every teammate's ticket file,
+  not only to the teammates it seems to affect.
 - **A shared resource changes hands on a written acknowledgement.** Before
   you tell another worktree or agent that a database, port or branch is
   clear, wait for its holder to confirm in writing that it has stopped.
@@ -73,8 +74,10 @@ from earlier phases that bear on its job.
    acceptance criterion, the blast radius and the slices. List every write
    verification will need outside the worktree, such as a migration or
    backfill on a shared or real-data database, or a call to a live external
-   system, and ask Joey for each one now. Done when someone outside the
-   conversation could check the criterion and Joey has answered the list.
+   system, and ask Joey for each one now. Check every factual claim the AC
+   or the copy will make against the code before Joey approves it. Done when
+   someone outside the conversation could check the criterion and Joey has
+   answered the list.
 2. **Research.** When the ruling turns on facts in the research beat, brief
    `product-researcher`, and pass its brief to the team.
 3. **Refine.** The owner drafts the ticket; the designer challenges the UX and
@@ -95,8 +98,10 @@ from earlier phases that bear on its job.
    integrations or credentials, brief `security-expert` on the design at the
    same time. A change to database names, destructive tooling, or agent or
    git hooks gets that brief too, even as dev tooling and even when a
-   kickoff says to skip security. Done when the designer and builder both
-   sign the spec and the security notes are folded into it.
+   kickoff says to skip security. Before you fold in a hardening note, check
+   whether existing code (a global scope, middleware, a sibling convention)
+   already covers it. Done when the designer and builder both sign the spec
+   and the security notes are folded into it.
 6. **Build.** The builder builds a stack on the worktree's branch, one layer
    per concern, and reports with every layer green.
 7. **Review and verify.** Run the `verify-feature` workflow with

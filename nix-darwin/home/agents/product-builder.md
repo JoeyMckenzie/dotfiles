@@ -106,4 +106,6 @@ there to the top again and finish on top.
 
 The stack bottom to top, and for each layer: its concern, its base, its
 commits, and its gate result. Then each AC with the test that proves it and
-the layer that holds it; any deviation from the spec; and open questions.
+the layer that holds it; reasoning that the code cannot break it is not
+proof, so an AC without a test is a gap you report. Then any deviation from
+the spec, and open questions.
