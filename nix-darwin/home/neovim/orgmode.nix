@@ -34,6 +34,12 @@
             description = "Note";
             template = "* %?\n  %U";
           };
+          # Meant for the visual <leader>oc below: %x is the clipboard the
+          # mapping just yanked into, %a links back to the source line.
+          c = {
+            description = "Code task (from selection)";
+            template = "* TODO %?\n  %u %a\n  #+begin_src %(return vim.bo.filetype)\n%x\n  #+end_src";
+          };
         };
 
         # <leader>oa d: today, then next actions, then what's blocked.
@@ -80,6 +86,19 @@
         directory = "~/org/notes",
       })
     '';
+
+    # Select code, <leader>oc: yank it to the clipboard and open the code-task
+    # template, which pastes it into a src block. Overwrites the clipboard.
+    keymaps = [
+      {
+        mode = "x";
+        key = "<leader>oc";
+        # Strip the trailing newline a linewise yank leaves, or the src block
+        # ends with a blank line.
+        action = ''"+y<cmd>lua vim.fn.setreg("+", (vim.fn.getreg("+"):gsub("\n$", ""))); require("orgmode").capture:open_template_by_shortcut("c")<cr>'';
+        options.desc = "Org: capture selection as task";
+      }
+    ];
 
     # orgmode ships a blink source for TODO keywords, tags, and properties.
     plugins.blink-cmp.settings.sources = {
