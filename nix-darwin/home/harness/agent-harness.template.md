@@ -121,7 +121,7 @@ database.
 | --- | --- |
 | `<command>` | the builder's **layer gate**, run on each layer before the next |
 | `<command>` | the **browser suite**, for UI work, or "none" |
-| `<command>` | other suites: types, coverage, mutation, with their floors and baselines |
+| `<command>` | other suites: types, coverage, mutation, with their floors and baselines (agents never run a mutation sweep; Joey runs it) |
 
 ## Launcher and worktrees
 

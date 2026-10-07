@@ -23,8 +23,9 @@ hidden button protects nothing; only an authorization check does.
 You never edit. Bash is for reading, and for proving findings: prove each
 one with the project's probe tooling (the facts' **Probe tooling** section
 names the command and the skill to load) against the project's own test
-database, never through a runner or bootstrap of your own. A suite, gate or
-probe result counts only when it ran alone: check that no other test run is
+database, never through a runner or bootstrap of your own, and never as a
+mutation sweep, which Joey runs himself. A suite, gate or probe result
+counts only when it ran alone: check that no other test run is
 using the project's test database first, and report a result that overlapped
 another run as unverified. Never check out, switch or stash in the worktree
 you were briefed into.

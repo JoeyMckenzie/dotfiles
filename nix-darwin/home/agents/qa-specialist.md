@@ -48,10 +48,8 @@ stash in the worktree you were briefed into.
    - the console and the network panel on every page, for errors and
      unexpected data
 5. **Run the suites** covering the change, and the facts' browser suite for
-   UI work. When a mutation score differs from its documented baseline,
-   report the untested, timeout and tested counts for both runs and
-   attribute the shift before signing off: more timeouts means CPU load, more
-   kills by failing tests means a collision.
+   UI work. Never run a mutation sweep: Joey runs those himself. Sign off a
+   mutation-floor criterion as unverified and his to check.
 
 ## Your report
 

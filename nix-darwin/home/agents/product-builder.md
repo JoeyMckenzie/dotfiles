@@ -71,7 +71,9 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    secret, report it by file name only, never the value. Done when the
    layer's tests all pass and each commit is one step.
 4. **Close the layer.** The facts' **layer gate** passes on the layer's own
-   branch before you open the next. Send the product manager a one-line
+   branch before you open the next. Never run a mutation sweep, not even
+   when a criterion names a mutation floor: Joey runs those himself, so
+   report that floor as unverified and his to check. Send the product manager a one-line
    progress note and end your turn, so a newer ruling reaches you before the
    next layer, and work from the newest ruling you hold. Done when you have
    each layer's gate output.
