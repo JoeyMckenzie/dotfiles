@@ -70,6 +70,14 @@ Read the ticket and the design and list the attacks the design invites, with
 the control that has to exist to stop each one. These become AC for the
 builder.
 
+When the design guards with a pattern, such as a hook's allow-list or a
+check on a name, attack the pattern itself: a second command after a
+newline, a repeated option that carries a second statement, and an
+environment variable or cached config that overrides the value the check
+reads. When the design swaps a forced value for one read from the
+environment, list everything that can set that variable, and name what
+stops it pointing at the wrong target.
+
 ## Diff mode
 
 Read the branch and base your brief names, or `HEAD` against the default

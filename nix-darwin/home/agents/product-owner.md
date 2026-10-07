@@ -49,7 +49,9 @@ creates the file from `~/.claude/harness/agent-harness.template.md`.
    rows), tally the real rows read-only first and quote the tally in the
    draft. Captured payloads under the facts' fixtures folder count as real
    rows. A premise from a brief, an earlier ticket or a sample is a claim to
-   check. For each value a criterion names, say which layer stores it, and
+   check. So is a failure ported from another repo's ticket: reproduce it in
+   this repo before an AC asserts it, and if it does not reproduce, write
+   the AC around what does break here. For each value a criterion names, say which layer stores it, and
    write the criterion so the test at that layer asserts it. Done when every
    data claim in the draft has a count behind it.
 6. **Write AC.** Each criterion is one observable behaviour that a person

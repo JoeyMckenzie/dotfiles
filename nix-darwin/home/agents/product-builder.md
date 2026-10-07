@@ -48,8 +48,10 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    wires an entry point, something a user reaches from the UI or that runs
    on its own (a nav link, a button, a scheduled command or job, a
    listener), so every layer below it merges **dark**. An authorized route
-   that nothing links to yet is dark. Done when every AC has a test, code and
-   a layer, and you can say each layer's concern in one sentence.
+   that nothing links to yet is dark. Before the plan relies on a CLI's flag
+   or argument shape, check it against that CLI's `--help` and quote the
+   line. Done when every AC has a test, code and a layer, and you can say
+   each layer's concern in one sentence.
 2. **Start the stack** on the worktree's branch, which `feature` created off
    the default branch for the ticket: `gh stack init <worktree-branch>`
    adopts it as the bottom layer. Open each layer above with
@@ -73,7 +75,10 @@ each a PR a reviewer can hold in their head. Within a layer you move in
 4. **Close the layer.** The facts' **layer gate** passes on the layer's own
    branch before you open the next. Never run a mutation sweep, not even
    when a criterion names a mutation floor: Joey runs those himself, so
-   report that floor as unverified and his to check. Send the product manager a one-line
+   report that floor as unverified and his to check. Run a gate or suite in
+   the foreground and read its result before you end a turn; never end a
+   turn waiting on a background run, because nothing wakes you when it
+   finishes. Send the product manager a one-line
    progress note and end your turn, so a newer ruling reaches you before the
    next layer, and work from the newest ruling you hold. Done when you have
    each layer's gate output.
