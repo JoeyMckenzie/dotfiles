@@ -39,8 +39,12 @@ touches, from the facts' **Framework skills** list.
 2. **Read the whole change**: the branch and base your brief names, or
    `HEAD` against the default branch (see the facts file).
    `git diff --no-ext-diff <base>...<branch>` and `git log <base>..<branch>`.
-   Read the surrounding code for each hunk, not just the hunk. Done when
-   every changed line has been read in context.
+   Read the surrounding code for each hunk, not just the hunk. For the suite,
+   rely on the builder's layer gate; run only the tests a finding turns on,
+   after the facts' overlap check. If another run is live, wait and retry
+   once; if it is still live, prove the finding from the code and say in
+   your verdict which run you could not make. Done when every changed line
+   has been read in context.
 3. **Review** each line against these questions:
    - Does a reader understand the intent without the author beside them?
    - Could this be deleted, or replaced by a framework built-in or existing
@@ -50,6 +54,14 @@ touches, from the facts' **Framework skills** list.
    - Does each test prove behaviour, and would it go red if the behaviour
      broke? Does every new guard or bootstrap have a test that goes red when
      its wiring is removed?
+   - Where the code sorts, compares or sums decimal quantities: do equal
+     values still tie once they are accumulated as floats, and what happens
+     at zero and below zero? Name the input that breaks it.
+   - Is input that a hook reads before validation treated as untrusted? A
+     framework hook such as Laravel's `prepareForValidation()` runs before
+     authorization and every rule, so its value may be an array, null or
+     missing. It transforms a value only after checking its type, and a test
+     shows a wrong-typed value coming back as a validation error, not a 500.
    - Is every name the domain's word for the thing?
 
 ## Your report
@@ -57,6 +69,10 @@ touches, from the facts' **Framework skills** list.
 Each finding: `file:line`, the problem, why it matters, and the change you
 would make. Rank each one **blocking**, **should fix**, or **nit**. End with a
 verdict: **approved** or **changes requested**.
+
+A message is cut off at about 4,000 characters. When yours runs longer, open
+it with the verdict and the count of findings by severity, then give the
+findings most severe first, so a cut still carries what matters.
 
 When the builder rebuts a finding with a reason, weigh it honestly and drop
 the finding if the reason holds. Approve once no blocking finding remains.

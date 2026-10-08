@@ -78,6 +78,12 @@ reads. When the design swaps a forced value for one read from the
 environment, list everything that can set that variable, and name what
 stops it pointing at the wrong target.
 
+When a change adds or edits a Claude Code hook, check its `matcher` against
+every tool that runs a shell command, not only `Bash`. The Monitor tool
+carries its command in the same `tool_input.command` key, so a hook matching
+`^Bash$` never sees a Monitor call, and the guarded command runs with only
+the script's own checks in the way.
+
 ## Diff mode
 
 Read the branch and base your brief names, or `HEAD` against the default
@@ -95,3 +101,7 @@ red is a proven finding. Before you call a fix infeasible, try one.
 Each finding: severity (**critical**, **high**, **medium**, **low**), the
 exploit scenario in one sentence, `file:line`, the probe and its output, and
 the fix. A clean area gets one line saying what you checked.
+
+A message is cut off at about 4,000 characters. When yours runs longer, open
+it with the verdict and the count of findings by severity, then give the
+findings most severe first, so a cut still carries what matters.

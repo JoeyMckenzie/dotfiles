@@ -87,10 +87,19 @@ const waivedBrief = waived.length === 0
   ? ''
   : `\n\nThe team settled these findings; do not re-raise them:\n${waived.map(w => `- ${w.file}: ${w.title} (${w.reason})`).join('\n')}`
 const briefing = target => `${ticketBrief}\n\nReview ${range(target)}.${waivedBrief}`
+const RUNNER_RULE =
+  '\n\nOne test runner at a time in this worktree. The builder ran the layer gate green before this review, and the other reviewers and ' +
+  'security-expert work in this worktree alongside you, so rely on that gate for the suite. Run a targeted test or probe only when a ' +
+  "finding turns on it, after the facts' overlap check comes back empty. When another run is live, wait and retry once; if it is still " +
+  'live, prove the finding from the code and say which run you could not make.'
+const APP_RULE =
+  '\n\nThe app is already running at the worktree\'s host, and the product manager owns it: work against it as you find it, and leave ' +
+  "every process alone, this worktree's and every other worktree's, with their ports and databases. If the host stops answering, " +
+  'stop and report that.'
 
 const lenses = await pipeline(
   LENSES,
-  lens => agent(briefing(lens.target), { agentType: lens.agentType, label: lens.label, phase: 'Review', schema: FINDINGS }),
+  lens => agent(`${briefing(lens.target)}${RUNNER_RULE}`, { agentType: lens.agentType, label: lens.label, phase: 'Review', schema: FINDINGS }),
   async (report, lens) => {
     if (!report) return { lens: lens.label, verdict: 'agent failed', failed: true, confirmed: [], refuted: [], unchallenged: [] }
     const serious = report.findings.filter(f => CHALLENGED.includes(f.severity)).sort(bySeverity)
@@ -134,22 +143,20 @@ if (standing.length > 0) {
 }
 
 phase('Verify')
-const [qa, design] = await parallel([
-  () => agent(`${briefing(stack)}\n\nSign the feature off against every acceptance criterion.`, {
-    agentType: 'qa-specialist',
-    label: 'qa',
+const qa = await agent(`${briefing(stack)}\n\nSign the feature off against every acceptance criterion.${APP_RULE}`, {
+  agentType: 'qa-specialist',
+  label: 'qa',
+  phase: 'Verify',
+  schema: QA,
+})
+const design = ui
+  ? await agent(`${briefing(stack)}\n\nReview mode: compare the built UI against the design spec on the ticket.${APP_RULE}`, {
+    agentType: 'product-designer',
+    label: 'design review',
     phase: 'Verify',
-    schema: QA,
-  }),
-  () => ui
-    ? agent(`${briefing(stack)}\n\nReview mode: compare the built UI against the design spec on the ticket.`, {
-      agentType: 'product-designer',
-      label: 'design review',
-      phase: 'Verify',
-      schema: DESIGN,
-    })
-    : Promise.resolve(null),
-])
+    schema: DESIGN,
+  })
+  : null
 
 if (qa?.verdict !== 'signed off') {
   log(`QA did not sign off: ${qa?.verdict ?? 'agent failed'}`)

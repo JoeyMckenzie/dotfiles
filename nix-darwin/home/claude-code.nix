@@ -14,6 +14,15 @@
         CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
       };
 
+      permissions.allow = [
+        "Edit(~/.config/nix-darwin/home/agents/**)"
+        "Write(~/.config/nix-darwin/home/agents/**)"
+        "Edit(~/.config/nix-darwin/home/workflows/**)"
+        "Write(~/.config/nix-darwin/home/workflows/**)"
+        "Edit(~/.config/nix-darwin/home/harness/**)"
+        "Write(~/.config/nix-darwin/home/harness/**)"
+      ];
+
       hooks = {
         PreToolUse = [
           {
@@ -26,7 +35,6 @@
             ];
           }
         ];
-
         PostToolUse = [
           {
             matcher = "Edit|MultiEdit|Write";

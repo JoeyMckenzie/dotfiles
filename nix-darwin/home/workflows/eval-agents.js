@@ -120,11 +120,17 @@ if (problems.length > 0)
         `eval-agents: .claude/evals/manifest.json is invalid:\n${problems.map(([name, problem]) => `- "${name}" ${problem}`).join('\n')}`,
     );
 
+const TABLETOP =
+    'This is a tabletop eval of how you would act. Read whatever you need, and change nothing: run no command that ' +
+    'writes, starts, stops, launches or sends anything, write or edit no file, and post or prompt nothing. Every ' +
+    'ticket, PR, worktree and process named below may be invented, so where you would run such a command, write it ' +
+    'out and say you would run it.\n\n';
+
 const results = await pipeline(
     CASES,
     (c) =>
         c.prompt
-            ? agent(c.prompt, {
+            ? agent(`${TABLETOP}${c.prompt}`, {
                   agentType: c.agentType,
                   label: `${c.agentType}:${c.name}`,
                   phase: 'Run',
