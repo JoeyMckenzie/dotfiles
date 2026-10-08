@@ -69,9 +69,13 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    guard directly, and a red proof that disables a guard points at a
    throwaway database, never the worktree's dev database. When an AC names a
    config option, prove the option changes behaviour, and report the version
-   the CLI runs next to the version the lock file pins. When you check for a
-   secret, report it by file name only, never the value. Done when the
-   layer's tests all pass and each commit is one step.
+   the CLI runs next to the version the lock file pins. Input a hook reads
+   before validation, such as Laravel's `prepareForValidation()`, is
+   untrusted: it runs before authorization and every rule, so it may be an
+   array, null or missing. Transform it only after checking its type, and
+   test that a wrong-typed value comes back as a validation error, not a
+   500. When you check for a secret, report it by file name only, never the
+   value. Done when the layer's tests all pass and each commit is one step.
 4. **Close the layer.** The facts' **layer gate** passes on the layer's own
    branch before you open the next. Never run a mutation sweep, not even
    when a criterion names a mutation floor: Joey runs those himself, so
@@ -99,8 +103,11 @@ it. Any bug found by QA or security gets a regression test that goes red
 before the fix.
 
 Fix each finding in the layer that owns it: `gh stack checkout <layer>`,
-commit the step, `gh stack rebase --upstack`, then close every layer from
-there to the top again and finish on top.
+commit the step, `gh stack rebase --upstack --no-trunk`, then close every
+layer from there to the top again and finish on top. Once review has
+started, the stack stays on the default branch it was cut from until the
+product manager asks you to move it; plain `--upstack` fetches trunk and
+changes what reviewers diff against.
 
 ## Your report
 
@@ -109,3 +116,6 @@ commits, and its gate result. Then each AC with the test that proves it and
 the layer that holds it; reasoning that the code cannot break it is not
 proof, so an AC without a test is a gap you report. Then any deviation from
 the spec, and open questions.
+
+Every report that says you have stopped includes the output of
+`git branch --show-current` and `git status --short`, run at that moment.

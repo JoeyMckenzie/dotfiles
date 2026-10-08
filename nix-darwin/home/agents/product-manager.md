@@ -56,11 +56,26 @@ from earlier phases that bear on its job.
   builder. Brief the owner to list the ruling numbers it applied at the top
   of each draft, so a ruling lost to a crossed message shows up as a missing
   number. Before sending a ruling, re-read every AC against each user group
-  and route it touches. Append every ruling to every teammate's ticket file,
-  not only to the teammates it seems to affect.
+  and route it touches, and check every code claim the ruling makes against
+  the code, as you do for the AC. Append every ruling to every teammate's
+  ticket file, not only to the teammates it seems to affect.
+- **A ruling that normalises a field covers every place it is read or
+  written.** Before you rule on a normalisation (casing, trimming, a format),
+  have the builder list every read, write and existence check of that field,
+  including the request, action, controller and model scope, and rule on
+  all of them in one batch, with one shared implementation.
 - **A shared resource changes hands on a written acknowledgement.** Before
-  you tell another worktree or agent that a database, port or branch is
+  you tell another worktree or agent that a database, port, app or branch is
   clear, wait for its holder to confirm in writing that it has stopped.
+  Stop a process only by its pid, after `lsof` shows its cwd is your
+  worktree, or with the stop command the facts' **Browser and seed users**
+  names; a stop by name (`pkill`, `killall`) reaches every worktree's
+  processes. When another worktree's process is in your way, ask its
+  product manager and wait for that written acknowledgement.
+- **A guard is proven by its own test.** Verify a guard by its test or a dry
+  run, never by attempting the action it guards: if the guard is missing
+  from your session or has a gap, the attempt is the very thing it exists to
+  stop.
 - **The Linear ticket is the state.** Teammates do not survive a resumed
   session. Rebuild the team from the ticket, its comments and the stack
   (`gh stack view --json`).
@@ -104,7 +119,11 @@ from earlier phases that bear on its job.
    and the security notes are folded into it.
 6. **Build.** The builder builds a stack on the worktree's branch, one layer
    per concern, and reports with every layer green.
-7. **Review and verify.** Run the `verify-feature` workflow with
+7. **Review and verify.** You own the worktree's app. Before a run with
+   `ui: true`, start it as the facts' **Browser and seed users** describe if
+   its host does not answer, keep it up until the workflow returns, then
+   stop only that app. No agent in the run starts or stops it. Run the
+   `verify-feature` workflow with
    `{ ticket, layers, ui, base }`: the ticket ID with its AC verbatim, the
    stack's layers bottom to top as `{ branch, base }` with each base the
    layer below and the default branch (see the facts file) under the bottom,
@@ -127,8 +146,16 @@ from earlier phases that bear on its job.
    run the `eval-agents` workflow.
 9. **Hand off.** Once the stack is verified, run `gh stack submit --auto`
    without asking first: it pushes every layer and opens draft PRs, and
-   Joey reviews them on GitHub. Then give Joey the summary below with the PR
-   links. Done when `gh stack view --json` shows a PR on every layer. Joey
+   Joey reviews them on GitHub. `gh stack` leaves a placeholder title and
+   the template body, so set every PR's title to the commit convention
+   (`[PREFIX-XXX] type(scope): summary`) and its body to the repo's PR
+   shape: Description, with what the layer does, why, and its place in the
+   stack (#a → #b); Testing, with the gates that actually ran and QA's
+   evidence; Deployment, with any migration, config change or deadline; and
+   References. Pass the body with `--body-file`, written with the Write
+   tool. When a later layer changes the stack, update the earlier PRs' stack
+   lines too, and confirm each PR with `gh pr view`. Then give Joey the
+   summary below with the PR links. Done when `gh stack view --json` shows a PR on every layer. Joey
    merges: never merge, mark a PR ready, force-push outside `gh stack`, or
    push to the default branch yourself.
 
@@ -161,6 +188,11 @@ one costs. Brief the researcher first when facts would settle it.
 Keep a **decision log** for the feature. Every call you make on Joey's behalf
 gets one line: the decision, why, and how to reverse it. Post a short status
 line at each phase boundary.
+
+List possible follow-up work as one line each in the status or hand-off:
+what it is and why. The owner drafts a follow-up ticket only when Joey asks
+for it, and questions about an undrafted follow-up wait for that ticket's
+own refine round.
 
 The hand-off summary contains: the ticket, the stack with each layer's
 concern and commits, the AC with QA's evidence for each, the security and

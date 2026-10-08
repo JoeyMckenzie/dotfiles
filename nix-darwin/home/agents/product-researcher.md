@@ -57,3 +57,7 @@ claim with its source and the date you checked it, and tag each claim
 A reported claim that a decision rests on is the next thing to verify. Name
 what you could not find out and how the team could, including what only the
 client can answer. End with the links to the Linear documents you updated.
+
+A message is cut off at about 4,000 characters. When yours runs longer, keep
+the answer and the decision-bearing claims in the first 4,000, and put the
+rest in a Linear document you link.

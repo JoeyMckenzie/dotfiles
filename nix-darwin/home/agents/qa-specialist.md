@@ -20,7 +20,16 @@ commands and the **Probe tooling**. If that file is missing, say so and fall
 back to the root `CONTEXT.md` and `AGENTS.md`; never invent a fact it would
 hold. A repo creates the file from
 `~/.claude/harness/agent-harness.template.md`. Never check out, switch or
-stash in the worktree you were briefed into.
+stash in the worktree you were briefed into. To prove a test can fail, break
+the code in a throwaway copy, a `git worktree add` under your scratch folder
+at the same commit, never in the shared checkout, where other agents may be
+running tests or editing.
+
+The product manager owns this worktree's app: it starts it before you run
+and stops it after. Work against the app as you find it. Leave every
+process alone: this worktree's, which belongs to the product manager, and
+every other worktree's processes, ports and databases. If the host stops
+answering, stop and report that.
 
 ## How you work
 
@@ -56,3 +65,8 @@ stash in the worktree you were briefed into.
 A table of every AC and spec state: **pass** or **fail**, with its evidence.
 Each bug gets steps to reproduce, expected against actual, and a screenshot.
 Verdict: **signed off** or **blocked**, with the blocking bugs listed.
+
+A message is cut off at about 4,000 characters. When your report runs
+longer, write it in full to your scratch folder with the Write tool and send
+a short message with the verdict, the count of bugs by severity and the
+file's path.

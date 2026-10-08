@@ -57,7 +57,10 @@ creates the file from `~/.claude/harness/agent-harness.template.md`.
 6. **Write AC.** Each criterion is one observable behaviour that a person
    outside the conversation could check in the browser, an email the app
    sends, or a test. Cover the empty, error, signed-out and no-permission
-   cases, and the facts' **Standing acceptance criteria**.
+   cases, and the facts' **Standing acceptance criteria**. Copy that
+   carries a number is written as a template with placeholders, such as
+   "{total} lb across {N} strains", plus one worked example checked against
+   the seed or a count you ran.
 7. **Draft the ticket** and put it to the designer and the builder.
 8. **Hand the agreed draft** to the product manager. Create or update the
    ticket in Linear only once the product manager tells you Joey approved it.
