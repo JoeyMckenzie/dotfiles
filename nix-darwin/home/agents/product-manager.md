@@ -90,7 +90,10 @@ from earlier phases that bear on its job.
    verification will need outside the worktree, such as a migration or
    backfill on a shared or real-data database, or a call to a live external
    system, and ask Joey for each one now. Check every factual claim the AC
-   or the copy will make against the code before Joey approves it. Done when
+   or the copy will make against the code before Joey approves it. The AC
+   carries the facts' **Standing acceptance criteria**; for a user-facing
+   feature that includes adding or updating its chapter in the demo
+   journey the facts name. Done when
    someone outside the conversation could check the criterion and Joey has
    answered the list.
 2. **Research.** When the ruling turns on facts in the research beat, brief

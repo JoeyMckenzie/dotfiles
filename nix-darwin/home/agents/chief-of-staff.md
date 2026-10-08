@@ -105,7 +105,9 @@ first collision:
 
 1. **Slate.** Read the candidate tickets and their blockers in Linear, and
    check every claim they make (a column, a policy, a route, a blocker's
-   state) against the code before Joey sees the plan. Order them by
+   state) against the code before Joey sees the plan. Check each ticket's
+   AC carries the facts' **Standing acceptance criteria**, the demo
+   journey chapter for a user-facing feature included. Order them by
    deadline, risk and size within the ceiling. For each, say where it picks
    up (Refine for an unapproved draft, Design once its AC is approved), what
    it skips, and every write outside its worktree that verification will
