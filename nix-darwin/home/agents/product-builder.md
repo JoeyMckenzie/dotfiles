@@ -74,8 +74,11 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    untrusted: it runs before authorization and every rule, so it may be an
    array, null or missing. Transform it only after checking its type, and
    test that a wrong-typed value comes back as a validation error, not a
-   500. When you check for a secret, report it by file name only, never the
-   value. Done when the layer's tests all pass and each commit is one step.
+   500. Focus, timing or state that must survive a page visit (an Inertia or
+   other client-side navigation) is proven by a test in the facts' browser
+   suite, in a real browser; a jsdom test with a mocked visit can pass with
+   the callbacks in the wrong order. When you check for a secret, report it
+   by file name only, never the value. Done when the layer's tests all pass and each commit is one step.
 4. **Close the layer.** The facts' **layer gate** passes on the layer's own
    branch before you open the next. Never run a mutation sweep, not even
    when a criterion names a mutation floor: Joey runs those himself, so

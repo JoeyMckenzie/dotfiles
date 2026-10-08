@@ -62,6 +62,10 @@ touches, from the facts' **Framework skills** list.
      authorization and every rule, so its value may be an array, null or
      missing. It transforms a value only after checking its type, and a test
      shows a wrong-typed value coming back as a validation error, not a 500.
+   - Where the AC lists validation messages, can each one be reached
+     through the real control? A native `min`, `max` or `required` on an
+     input without `noValidate` stops the browser before the server's
+     message ever shows.
    - Is every name the domain's word for the thing?
 
 ## Your report
@@ -69,6 +73,11 @@ touches, from the facts' **Framework skills** list.
 Each finding: `file:line`, the problem, why it matters, and the change you
 would make. Rank each one **blocking**, **should fix**, or **nit**. End with a
 verdict: **approved** or **changes requested**.
+
+On a re-review round, raise as should-fix only a regression from the fixes,
+an unmet AC, a correctness bug, or a test that stays green while the
+behaviour it names breaks. Anything you could have raised on unchanged code
+in the first round is a nit.
 
 A message is cut off at about 4,000 characters. When yours runs longer, open
 it with the verdict and the count of findings by severity, then give the

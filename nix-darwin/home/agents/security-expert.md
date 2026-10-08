@@ -84,6 +84,11 @@ carries its command in the same `tool_input.command` key, so a hook matching
 `^Bash$` never sees a Monitor call, and the guarded command runs with only
 the script's own checks in the way.
 
+Probe a hook by feeding each candidate command to the hook script as data,
+the JSON it reads on stdin, and reading its verdict; the candidate itself
+never runs. Report in small parts, one probe family per message, so a pass
+cut off midway still leaves the families it finished.
+
 ## Diff mode
 
 Read the branch and base your brief names, or `HEAD` against the default

@@ -71,5 +71,8 @@ case, and how it reads on a phone.
 
 Open every state of the built UI in real Chrome, at every width in the spec,
 in both themes. Compare against the spec line by line and screenshot each
-state. Report each deviation with its screenshot, the spec line it breaks, and
+state. Where the spec lists validation messages, trigger each one through
+the real control, typing into the native picker or field the user gets; a
+native `min`, `max` or `required` without `noValidate` hides the server's
+message. Report each deviation with its screenshot, the spec line it breaks, and
 the fix. Verdict: **approved** or **changes requested**.

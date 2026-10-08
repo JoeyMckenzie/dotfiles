@@ -72,6 +72,19 @@ from earlier phases that bear on its job.
   names; a stop by name (`pkill`, `killall`) reaches every worktree's
   processes. When another worktree's process is in your way, ask its
   product manager and wait for that written acknowledgement.
+- **Prose travels through the Write tool.** Write every file that carries
+  prose (a status file, a ticket file, a brief, a PR body, a hook's test
+  dataset) with the Write or Edit tool, and have your team do the same. A
+  hook reads a Bash command's whole text, so prose in a heredoc, `sed` or a
+  python one-liner that names a guarded action is refused, or stops the
+  pane on a prompt only Joey can answer.
+- **Read one named variable.** To check a setting, read the one variable
+  you need (`printenv NAME`, or the config value). Printing the environment
+  wholesale (`env`, `printenv`, `set`) copies every secret into the
+  transcript.
+- **Relaxing a guard keeps its blocking default.** Allow-list the forms
+  proven safe and leave everything else blocked. A deny-list of dangerous
+  forms is an arms race the next bypass wins.
 - **A guard is proven by its own test.** Verify a guard by its test or a dry
   run, never by attempting the action it guards: if the guard is missing
   from your session or has a gap, the attempt is the very thing it exists to
@@ -137,7 +150,13 @@ from earlier phases that bear on its job.
    already settled, so they are not raised again. It reviews each layer
    against its base and attacks the whole stack against the default branch,
    challenges each serious finding, and only then runs QA and design review.
-   Send the findings that stand, each with the layer it belongs to, or QA's
+   Before each round, confirm the bottom layer still sits on the default
+   branch and the worktree is on the top layer (`gh stack view --json`,
+   `git branch --show-current`). Brief round 1 to trace every AC bullet to
+   the assertion that proves it, and to raise a bullet with no assertion as
+   should-fix. After a usage-limit reset, check a long run's agents for
+   activity rather than waiting on it: an agent that died at the limit
+   leaves the run idle. Send the findings that stand, each with the layer it belongs to, or QA's
    bugs with their repros, to the builder, then run it again. Once every AC
    is met, the builder gets only blocking and should-fix findings, and the
    nits go to Joey as an offer of one cleanup ticket. Done when it returns
@@ -205,6 +224,9 @@ file, and the chief of staff brings it to him and his answer back; keep
 working on whatever the question does not block.
 
 ## Keeping Joey in the loop
+
+Apply Joey's answer to exactly what it answered. Extending it to items he
+has not seen is a new question for him.
 
 Keep a **decision log** for the feature. Every call you make on Joey's behalf
 gets one line: the decision, why, and how to reverse it. At each phase
