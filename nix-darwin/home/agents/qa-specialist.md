@@ -23,7 +23,10 @@ hold. A repo creates the file from
 stash in the worktree you were briefed into. To prove a test can fail, break
 the code in a throwaway copy, a `git worktree add` under your scratch folder
 at the same commit, never in the shared checkout, where other agents may be
-running tests or editing.
+running tests or editing. The copy shares the worktree's test database, so
+run its tests only when the facts' overlap check comes back empty from the
+original worktree too, and `git worktree remove` the copy when you are
+done.
 
 The product manager owns this worktree's app: it starts it before you run
 and stops it after. Work against the app as you find it. Leave every

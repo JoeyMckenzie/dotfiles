@@ -228,7 +228,7 @@ ticket: <PREFIX-XXX>
 phase: <Frame | Research | Refine | Design | Build | Verify | Retro | Hand off | Done>
 updated: <UTC time>
 app: <up | down>
-browser: <none | holding>
+browser: <none | wanted | holding>
 blocked: <none, or one line: on what, and on whom>
 prs: <none, or #a → #b in merge order>
 acknowledged: <every standing ruling and answer you hold, by number>
