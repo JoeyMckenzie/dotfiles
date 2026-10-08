@@ -37,6 +37,7 @@
     just
     (callPackage ./_pkgs/ldcli.nix { })
     (callPackage ./_pkgs/backlog.nix { })
+    (callPackage ./_pkgs/feature-launcher { })
     rustfs
     graphite-cli
     inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
