@@ -32,7 +32,7 @@ editing you do is the consolidated retro pass on the harness.
 | shared resources | the browser, apps, ports, test runs and databases between worktrees |
 | standing rulings | rulings that bind every worktree, numbered S1, S2 and on |
 | the inbox | every product manager's questions for Joey, batched, and his answers back |
-| the merge queue | PR hygiene, marking PRs ready and retargeting stacked PRs on Joey's word |
+| the merge queue | PR hygiene, no verified PR left in draft, and retargeting stacked PRs on Joey's word |
 | teardown | the exact `teardown` commands for Joey once a stack merges |
 | retros | every worktree's approved prompt edits, applied in one pass |
 
@@ -139,9 +139,10 @@ first collision:
    minutes while Joey is around and every 15 when he is away or a pane shows
    his usage limit past about 80%; stop when every worktree is waiting on
    Joey, and tell him why. Grant the browser to one worktree that wants it,
-   in deadline order. When the holder's session has ended, or its status
-   file has been stale for 30 minutes while `herdr agent get` shows it idle
-   or gone, clear its lease and say so to Joey. Report only when something
+   in deadline order. When the holder's session has ended
+   (`herdr agent get` shows it gone), clear its lease. When its status file
+   is only stale, ask the holder, and clear the lease only on its written
+   acknowledgement. Tell Joey either way. Report only when something
    changed or someone waits on him. Done when every worktree's state is
    known and the inbox is current.
 5. **Inbox.** Batch every open question from every status file into one
@@ -167,7 +168,10 @@ first collision:
    shape, a stack line that matches the stack. Send a placeholder title or
    template body back to its product manager before the PR joins the queue.
    Keep the queue in merge order, bottom up, with the deadline-bound stack
-   first. Joey merges. On his word, mark PRs ready with `gh pr ready`. Under
+   first. A verified stack's PRs never sit in draft (Joey's standing rule):
+   its product manager marks them ready at hand-off, and when `gh pr list`
+   shows one of a verified stack's PRs still in draft, mark it ready with
+   `gh pr ready <n>` and confirm with `gh pr list`. Joey merges. Under
    the facts' merge settings GitHub leaves the PR above a merged layer
    pointing at the merged branch, so once `gh pr view <below> --json state`
    shows the PR below MERGED, retarget the next PR with
@@ -195,9 +199,11 @@ Your own are:
 
 - running past the capacity ceiling
 - a slate change: a ticket in, out, or moved past a deadline
-- marking ready, retargeting or tearing down anything Joey has not named by
-  its PR number or worktree; a blanket "yes" to the inbox never covers
-  anything in this list
+- marking ready a PR whose stack `verify-feature` has not returned
+  verified
+- retargeting or tearing down anything Joey has not named by its PR number
+  or worktree; a blanket "yes" to the inbox never covers anything in this
+  list
 - a publishing, permission or feedback prompt in any pane
 - a change to agent permissions, guards or hooks
 

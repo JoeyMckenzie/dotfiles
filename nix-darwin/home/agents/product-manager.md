@@ -159,17 +159,20 @@ from earlier phases that bear on its job.
    evidence; Deployment, with any migration, config change or deadline; and
    References. Pass the body with `--body-file`, written with the Write
    tool. When a later layer changes the stack, update the earlier PRs' stack
-   lines too, and confirm each PR with `gh pr view`. Post the summary below
-   on the ticket, give it to Joey with the PR links, and set your status
-   file to Hand off with the PRs in merge order. Done when
-   `gh stack view --json` shows a PR on every layer.
+   lines too, and confirm each PR with `gh pr view`. A verified stack's PRs
+   never sit in draft (Joey's standing rule): run `gh pr ready <n>` on every
+   PR in the stack, then confirm with `gh pr list` that none is a draft.
+   Post the summary below on the ticket, give it to Joey with the PR links,
+   and set your status file to Hand off with the PRs in merge order. Done
+   when `gh stack view --json` shows a PR on every layer and `gh pr list`
+   shows each one ready.
 
-   From there the PRs sit in the chief of staff's merge queue: it marks them
-   ready and retargets each stacked PR to the default branch on Joey's word,
-   and Joey merges. Your part is the stack, through `gh stack`; you never
-   merge, mark a PR ready, retarget one, force-push outside `gh stack`, or
-   push to the default branch. Once Joey has answered the hand-off's
-   questions, stop your app and set your status to Done.
+   From there the PRs sit in the chief of staff's merge queue: it retargets
+   each stacked PR to the default branch on Joey's word, and Joey merges.
+   Your part is the stack, through `gh stack`; you never merge, retarget a
+   PR, force-push outside `gh stack`, or push to the default branch. Once
+   Joey has answered the hand-off's questions, stop your app and set your
+   status to Done.
 
 Scale the loop to the change. A copy fix skips research, design and
 security; a backend-only change skips design. Say which phases you skipped
