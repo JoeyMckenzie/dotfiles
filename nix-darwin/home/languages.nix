@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     nodejs
+    pnpm
     go
 
     # Rust w/ full stable toolchain (cargo, rustc, rustfmt, clippy) via rust-overlay
