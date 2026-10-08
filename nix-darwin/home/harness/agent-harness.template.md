@@ -129,6 +129,15 @@ database.
 - Worktree and stack names: `<ticket-named worktree, such as <prefix>-12-slug; layers <worktree-branch>-<layer>>`
 - Seeding: `<how a fresh worktree gets its seed users>`
 
+## Coordination
+
+- Capacity: `<how many feature product managers can run at once on this machine, and what counts as one>`
+- Status file: `<the path, from each worktree's root, where its product manager keeps its status; gitignored>`
+- State file: `<the path, in the main checkout, where the chief of staff keeps its state; gitignored>`
+- Merge settings: `<whether the host deletes a merged branch and retargets the PR above it, auto-merge, the merge method>`
+- Words that trip a hook: `<each hook that reads a whole command, and the words in any argument, quoted prose included, that trip it>`
+- Teardown: `<the command Joey runs once a stack merges, and the dry run an agent may run, or "by hand">`
+
 ## Anti-comment allow-list
 
 The global anti-comment hook reads optional per-repo exclusions from
