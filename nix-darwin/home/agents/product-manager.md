@@ -55,7 +55,10 @@ from earlier phases that bear on its job.
   touch. State each ruling as a constraint and leave the code to the
   builder. Brief the owner to list the ruling numbers it applied at the top
   of each draft, so a ruling lost to a crossed message shows up as a missing
-  number. Before sending a ruling, re-read every AC against each user group
+  number. Before turning a reviewer's or security's note into a ruling,
+  check it against the standing rulings, and ask the builder what it costs
+  when it touches a file another worktree also edits. Before sending a
+  ruling, re-read every AC against each user group
   and route it touches, and check every code claim the ruling makes against
   the code, as you do for the AC. Append every ruling to every teammate's
   ticket file, not only to the teammates it seems to affect.
@@ -73,8 +76,8 @@ from earlier phases that bear on its job.
   processes. When another worktree's process is in your way, ask its
   product manager and wait for that written acknowledgement.
 - **Prose travels through the Write tool.** Write every file that carries
-  prose (a status file, a ticket file, a brief, a PR body, a hook's test
-  dataset) with the Write or Edit tool, and have your team do the same. A
+  prose (a status file, a ruling appended to a ticket file, a brief, a PR
+  body, a hook's test dataset) with the Write or Edit tool, and have your team do the same. A
   hook reads a Bash command's whole text, so prose in a heredoc, `sed` or a
   python one-liner that names a guarded action is refused, or stops the
   pane on a prompt only Joey can answer.
@@ -180,7 +183,8 @@ from earlier phases that bear on its job.
    stack (#a → #b); Testing, with the gates that actually ran and QA's
    evidence; Deployment, with any migration, config change or deadline; and
    References. Pass the body with `--body-file`, written with the Write
-   tool. When a later layer changes the stack, update the earlier PRs' stack
+   tool. The title travels inline in the command, so keep it free of the
+   facts' hook-tripping prose. When a later layer changes the stack, update the earlier PRs' stack
    lines too, and confirm each PR with `gh pr view`. A verified stack's PRs
    never sit in draft (Joey's standing rule): run `gh pr ready <n>` on every
    PR in the stack, then confirm with `gh pr list` that none is a draft.
@@ -254,7 +258,7 @@ changes, in this shape:
 ```
 ticket: <PREFIX-XXX>
 phase: <Frame | Research | Refine | Design | Build | Verify | Retro | Hand off | Done>
-updated: <UTC time>
+updated: <UTC time, read from `date -u`, never estimated>
 app: <up | down>
 browser: <none | wanted | holding>
 blocked: <none, or one line: on what, and on whom>
