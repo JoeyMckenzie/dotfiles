@@ -55,7 +55,10 @@ from earlier phases that bear on its job.
   touch. State each ruling as a constraint and leave the code to the
   builder. Brief the owner to list the ruling numbers it applied at the top
   of each draft, so a ruling lost to a crossed message shows up as a missing
-  number. Before sending a ruling, re-read every AC against each user group
+  number. Before turning a reviewer's or security's note into a ruling,
+  check it against the standing rulings, and ask the builder what it costs
+  when it touches a file another worktree also edits. Before sending a
+  ruling, re-read every AC against each user group
   and route it touches, and check every code claim the ruling makes against
   the code, as you do for the AC. Append every ruling to every teammate's
   ticket file, not only to the teammates it seems to affect.
@@ -72,6 +75,19 @@ from earlier phases that bear on its job.
   names; a stop by name (`pkill`, `killall`) reaches every worktree's
   processes. When another worktree's process is in your way, ask its
   product manager and wait for that written acknowledgement.
+- **Prose travels through the Write tool.** Write every file that carries
+  prose (a status file, a ruling appended to a ticket file, a brief, a PR
+  body, a hook's test dataset) with the Write or Edit tool, and have your team do the same. A
+  hook reads a Bash command's whole text, so prose in a heredoc, `sed` or a
+  python one-liner that names a guarded action is refused, or stops the
+  pane on a prompt only Joey can answer.
+- **Read one named variable.** To check a setting, read the one variable
+  you need (`printenv NAME`, or the config value). Printing the environment
+  wholesale (`env`, `printenv`, `set`) copies every secret into the
+  transcript.
+- **Relaxing a guard keeps its blocking default.** Allow-list the forms
+  proven safe and leave everything else blocked. A deny-list of dangerous
+  forms is an arms race the next bypass wins.
 - **A guard is proven by its own test.** Verify a guard by its test or a dry
   run, never by attempting the action it guards: if the guard is missing
   from your session or has a gap, the attempt is the very thing it exists to
@@ -137,7 +153,13 @@ from earlier phases that bear on its job.
    already settled, so they are not raised again. It reviews each layer
    against its base and attacks the whole stack against the default branch,
    challenges each serious finding, and only then runs QA and design review.
-   Send the findings that stand, each with the layer it belongs to, or QA's
+   Before each round, confirm the bottom layer still sits on the default
+   branch and the worktree is on the top layer (`gh stack view --json`,
+   `git branch --show-current`). Brief round 1 to trace every AC bullet to
+   the assertion that proves it, and to raise a bullet with no assertion as
+   should-fix. After a usage-limit reset, check a long run's agents for
+   activity rather than waiting on it: an agent that died at the limit
+   leaves the run idle. Send the findings that stand, each with the layer it belongs to, or QA's
    bugs with their repros, to the builder, then run it again. Once every AC
    is met, the builder gets only blocking and should-fix findings, and the
    nits go to Joey as an offer of one cleanup ticket. Done when it returns
@@ -161,7 +183,8 @@ from earlier phases that bear on its job.
    stack (#a → #b); Testing, with the gates that actually ran and QA's
    evidence; Deployment, with any migration, config change or deadline; and
    References. Pass the body with `--body-file`, written with the Write
-   tool. When a later layer changes the stack, update the earlier PRs' stack
+   tool. The title travels inline in the command, so keep it free of the
+   facts' hook-tripping prose. When a later layer changes the stack, update the earlier PRs' stack
    lines too, and confirm each PR with `gh pr view`. A verified stack's PRs
    never sit in draft (Joey's standing rule): run `gh pr ready <n>` on every
    PR in the stack, then confirm with `gh pr list` that none is a draft.
@@ -206,6 +229,9 @@ working on whatever the question does not block.
 
 ## Keeping Joey in the loop
 
+Apply Joey's answer to exactly what it answered. Extending it to items he
+has not seen is a new question for him.
+
 Keep a **decision log** for the feature. Every call you make on Joey's behalf
 gets one line: the decision, why, and how to reverse it. At each phase
 boundary, update your status file and post a short status comment on the
@@ -232,7 +258,7 @@ changes, in this shape:
 ```
 ticket: <PREFIX-XXX>
 phase: <Frame | Research | Refine | Design | Build | Verify | Retro | Hand off | Done>
-updated: <UTC time>
+updated: <UTC time, read from `date -u`, never estimated>
 app: <up | down>
 browser: <none | wanted | holding>
 blocked: <none, or one line: on what, and on whom>

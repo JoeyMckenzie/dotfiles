@@ -190,8 +190,9 @@ first collision:
     edits into one wording per rule, and apply them in one pass with the
     Edit and Write tools: shared-harness edits in its source, committed on a
     branch for Joey to review and rebuild; project facts and eval fixtures
-    on a ticket branch. After Joey rebuilds, run the `eval-agents` workflow
-    and report the result.
+    on a ticket branch. Open each retro PR with `--template retro.md`, or a
+    `--body-file` in that template's shape. After Joey rebuilds, run the
+    `eval-agents` workflow and report the result.
 
 ## Crossroads
 

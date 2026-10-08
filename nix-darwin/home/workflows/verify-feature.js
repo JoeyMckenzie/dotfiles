@@ -96,6 +96,11 @@ const APP_RULE =
   '\n\nThe app is already running at the worktree\'s host, and the product manager owns it: work against it as you find it, and leave ' +
   "every process alone, this worktree's and every other worktree's, with their ports and databases. If the host stops answering, " +
   'stop and report that.'
+const HEADLESS_RULE =
+  '\n\nThis run is headless: no app is running and no browser is granted. Prove every criterion with tests and probes against the ' +
+  "worktree's test database, and leave every process alone, this worktree's and every other worktree's, with their ports and databases. " +
+  'An AC that only a browser can prove goes in your report as unverified, for the product manager.'
+const QA_RULE = ui ? APP_RULE : HEADLESS_RULE
 
 const lenses = await pipeline(
   LENSES,
@@ -143,7 +148,7 @@ if (standing.length > 0) {
 }
 
 phase('Verify')
-const qa = await agent(`${briefing(stack)}\n\nSign the feature off against every acceptance criterion.${APP_RULE}`, {
+const qa = await agent(`${briefing(stack)}\n\nSign the feature off against every acceptance criterion.${QA_RULE}`, {
   agentType: 'qa-specialist',
   label: 'qa',
   phase: 'Verify',
