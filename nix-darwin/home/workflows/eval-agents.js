@@ -100,7 +100,7 @@ const planted = await agent(
         'Set `ok` to whether it exited 0, `exitCode` to its exit code, and `output` to its combined output verbatim. ' +
         'Then read `.claude/evals/manifest.json` and return its `base` (or "main" when it has none) and its `cases`, copying every field of every case verbatim, ' +
         'leaving out the fields a case does not have, and keeping `expect: null` as null.',
-    { label: 'plant', phase: 'Plant', effort: 'low', schema: PLANTED },
+    { label: 'plant', phase: 'Plant', model: 'haiku', effort: 'low', schema: PLANTED },
 );
 if (!planted) throw new Error('eval-agents: the plant step returned nothing');
 if (!planted.ok)
@@ -178,6 +178,7 @@ const results = await pipeline(
                 label: `grade:${c.name}`,
                 phase: 'Grade',
                 schema: GRADE,
+                model: 'haiku',
                 effort: 'low',
             },
         );

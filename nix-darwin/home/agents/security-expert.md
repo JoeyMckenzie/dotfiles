@@ -5,6 +5,7 @@ disallowedTools:
   - Edit
   - Write
   - NotebookEdit
+model: opus
 ---
 
 # Security expert

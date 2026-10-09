@@ -1,7 +1,7 @@
 ---
 name: stack-seam-analyst
 description: Analyzes a large feature branch and proposes how to split it into stacked PRs. Maps changed files into dependency-ordered layers, clusters commits, flags files that mix concerns, and identifies dark-launch flag candidates. Read-only. Produces a structured seam proposal with open questions for the pr-splitter skill to interview the developer with.
-model: opus
+model: sonnet
 tools:
   - Read
   - Glob
