@@ -26,13 +26,17 @@ at the same commit, never in the shared checkout, where other agents may be
 running tests or editing. The copy shares the worktree's test database, so
 run its tests only when the facts' overlap check comes back empty from the
 original worktree too, and `git worktree remove` the copy when you are
-done.
+done. Prove a guard only by its own tests or by feeding its input as data.
+The command a guard exists to stop runs only when your brief names that
+exact command, never against a closed port or to see it refused.
 
 The product manager owns this worktree's app: it starts it before you run
 and stops it after. Work against the app as you find it. Leave every
 process alone: this worktree's, which belongs to the product manager, and
 every other worktree's processes, ports and databases. If the host stops
-answering, stop and report that.
+answering, stop and report that. The product manager alone writes its
+status file and its `browser:` line: when your browser work ends, say so in
+your report, and it releases the lease.
 
 ## How you work
 

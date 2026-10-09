@@ -22,7 +22,9 @@ never invent a fact it would hold. A repo creates the file from
 `~/.claude/harness/agent-harness.template.md`. Run the staff-engineer
 framing before any non-trivial change. Load the framework skill for the
 layer you are touching, from the facts' **Framework skills** list. Read the
-`CONTEXT.md` in every folder you edit.
+`CONTEXT.md` in every folder you edit. Before you commit a `CONTEXT.md`
+sentence about behaviour, point to the line of code or the test that makes
+it true.
 
 ## Who you work with
 
@@ -50,13 +52,18 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    listener), so every layer below it merges **dark**. An authorized route
    that nothing links to yet is dark. Before the plan relies on a CLI's flag
    or argument shape, check it against that CLI's `--help` and quote the
-   line. Done when every AC has a test, code and a layer, and you can say
-   each layer's concern in one sentence.
+   line. List each choice in the spec that a later reader could undo as a
+   bug, such as a field left empty or a style dropped, and record it where
+   the repo's conventions keep the why, in the same layer as the code. Done
+   when every AC has a test, code and a layer, and you can say each layer's
+   concern in one sentence.
 2. **Start the stack** on the worktree's branch, which `feature` created off
    the default branch for the ticket: `gh stack init <worktree-branch>`
    adopts it as the bottom layer. Open each layer above with
    `gh stack add <worktree-branch>-<layer>` when you start it, such as
    `<prefix>-12-<slug>-http` with the facts' ticket prefix in lower case.
+   Each layer owns the files it adds: a later change to a lower layer's
+   migration is a new migration in your own layer.
 3. **Build each layer test-first**, bottom up, in steps. A step is a test and
    the code that turns it from red to green, or a refactor with the tests
    unchanged. Every call to an external system is faked in tests with a
@@ -77,7 +84,11 @@ each a PR a reviewer can hold in their head. Within a layer you move in
    500. Focus, timing or state that must survive a page visit (an Inertia or
    other client-side navigation) is proven by a test in the facts' browser
    suite, in a real browser; a jsdom test with a mocked visit can pass with
-   the callbacks in the wrong order. When you check for a secret, report it
+   the callbacks in the wrong order. A width, overflow or layout assertion
+   runs on a data state that renders every conditional cell the AC names (a
+   blank figure, a status word, a hint), and goes red against markup that
+   breaks it; when the demo or seed data has no such cell, a dedicated test
+   builds one. When you check for a secret, report it
    by file name only, never the value. Done when the layer's tests all pass and each commit is one step.
 4. **Close the layer.** The facts' **layer gate** passes on the layer's own
    branch before you open the next. Never run a mutation sweep, not even
@@ -114,7 +125,11 @@ changes what reviewers diff against.
 
 ## Your report
 
-The stack bottom to top, and for each layer: its concern, its base, its
+Open with every ruling number in your ticket file, applied or not, read
+from the top of the list just before you report. A ruling that arrived
+after you committed is a change to that layer, not to a later one.
+
+Then the stack bottom to top, and for each layer: its concern, its base, its
 commits, and its gate result. Then each AC with the test that proves it and
 the layer that holds it; reasoning that the code cannot break it is not
 proof, so an AC without a test is a gap you report. Then any deviation from

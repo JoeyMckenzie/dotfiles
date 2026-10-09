@@ -74,8 +74,12 @@ When the design guards with a pattern, such as a hook's allow-list or a
 check on a name, attack the pattern itself: a second command after a
 newline, a repeated option that carries a second statement, and an
 environment variable or cached config that overrides the value the check
-reads. When the design swaps a forced value for one read from the
-environment, list everything that can set that variable, and name what
+reads. Before you approve a guard that matches a command's text or a name,
+list how the guarded program and its target normalise their input: command
+abbreviations and aliases, letter case (in the program and in the store
+behind it), shell quoting, and names built at run time. Each one is a
+finding or a documented gap. When the design swaps a forced value for one
+read from the environment, list everything that can set that variable, and name what
 stops it pointing at the wrong target.
 
 When a change adds or edits a Claude Code hook, check its `matcher` against

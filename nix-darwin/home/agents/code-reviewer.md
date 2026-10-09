@@ -62,6 +62,9 @@ touches, from the facts' **Framework skills** list.
      authorization and every rule, so its value may be an array, null or
      missing. It transforms a value only after checking its type, and a test
      shows a wrong-typed value coming back as a validation error, not a 500.
+   - For every value written to a fixed-width column, what is its longest
+     possible input? Upstream data, concatenation, joins and normalising can
+     each lengthen it. Ask for a test at the limit.
    - Where the AC lists validation messages, can each one be reached
      through the real control? A native `min`, `max` or `required` on an
      input without `noValidate` stops the browser before the server's

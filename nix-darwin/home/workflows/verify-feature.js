@@ -1,11 +1,11 @@
 export const meta = {
   name: 'verify-feature',
-  description: 'Review, attack and verify the current feature stack: code review per layer and security on the whole stack in parallel, each finding challenged, then QA',
+  description: 'Review, attack and verify the current feature stack: code review per layer and security on the whole stack in parallel, each finding challenged, then QA every round, with Chrome and design review only once no finding stands',
   whenToUse: 'After product-builder hands back a green stack. Pass { ticket, layers?, ui?, base?, waived? }: ticket is the Linear ID plus its AC verbatim, layers the stack bottom to top as { branch, base }, base the default branch from the facts file (main when omitted), waived the findings the team settled as [{ file, title, reason }].',
   phases: [
     { title: 'Review', detail: 'code-reviewer on each layer, security-expert on the stack' },
     { title: 'Challenge', detail: 'one skeptic per serious finding' },
-    { title: 'Verify', detail: 'qa-specialist, plus product-designer for UI work' },
+    { title: 'Verify', detail: 'qa-specialist every round, headless while findings stand; product-designer for UI work once none do' },
   ],
 }
 
@@ -143,8 +143,15 @@ const standing = lenses
   .filter(f => !isWaived(f))
 
 if (standing.length > 0) {
-  log(`${standing.length} findings of medium, should-fix or worse stand, so QA waits for the fixes`)
-  return { status: 'fix first', lenses, qa: null, design: null }
+  log(`${standing.length} findings of medium, should-fix or worse stand, so QA runs headless and design review waits for the fixes`)
+  phase('Verify')
+  const standingBrief = standing.map(f => `- [${f.severity}] ${f.file}: ${f.title}`).join('\n')
+  const qa = await agent(
+    `${briefing(stack)}\n\nSign the feature off against every acceptance criterion. These findings stand, and the builder fixes them ` +
+    `before the next round, so expect those areas to change:\n${standingBrief}${HEADLESS_RULE}`,
+    { agentType: 'qa-specialist', label: 'qa', phase: 'Verify', schema: QA },
+  )
+  return { status: 'fix first', lenses, qa, design: null }
 }
 
 phase('Verify')
