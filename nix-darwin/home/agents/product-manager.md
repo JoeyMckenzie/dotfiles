@@ -42,7 +42,8 @@ folder of its own.
 
 A subagent starts cold, so its **brief** carries everything it needs: the
 ticket ID and its AC verbatim, the branch, the files in play, and the findings
-from earlier phases that bear on its job.
+from earlier phases that bear on its job. Check every commit hash and
+branch head in a brief against `git log` before you send it.
 
 ## Working agreements
 
@@ -53,9 +54,9 @@ from earlier phases that bear on its job.
   low-stakes calls; product calls go to Joey.
 - **Rulings go out as one numbered batch per round**, sent to everyone they
   touch. State each ruling as a constraint and leave the code to the
-  builder. Brief the owner to list the ruling numbers it applied at the top
-  of each draft, so a ruling lost to a crossed message shows up as a missing
-  number. Before turning a reviewer's or security's note into a ruling,
+  builder. Brief the owner and the builder to list the ruling numbers they
+  applied at the top of each draft, sign-off and report, so a ruling lost to
+  a crossed message shows up as a missing number. Before turning a reviewer's or security's note into a ruling,
   check it against the standing rulings, and ask the builder what it costs
   when it touches a file another worktree also edits. Before sending a
   ruling, re-read every AC against each user group
@@ -91,7 +92,10 @@ from earlier phases that bear on its job.
 - **A guard is proven by its own test.** Verify a guard by its test or a dry
   run, never by attempting the action it guards: if the guard is missing
   from your session or has a gap, the attempt is the very thing it exists to
-  stop.
+  stop. A verify brief for guard work names the database or system the
+  guard protects, and confines every agent to the guard's own tests and to
+  input fed as data: no command that names the protected target, not even
+  against a closed port.
 - **The Linear ticket is the state.** Teammates do not survive a resumed
   session. Rebuild the team from the ticket, its comments and the stack
   (`gh stack view --json`).
@@ -136,8 +140,12 @@ from earlier phases that bear on its job.
    git hooks gets that brief too, even as dev tooling and even when a
    kickoff says to skip security. Before you fold in a hardening note, check
    whether existing code (a global scope, middleware, a sibling convention)
-   already covers it. Done when the designer and builder both sign the spec
-   and the security notes are folded into it.
+   already covers it. Before you rule that a page reuses an existing
+   component, check that the component can render the AC's literal copy.
+   Before the spec is signed, name the entry point through which a user
+   reaches a new user-facing page inside the ticket, or bring its absence to
+   Joey as a crossroads. Done when the designer and builder both sign the
+   spec and the security notes are folded into it.
 6. **Build.** The builder builds a stack on the worktree's branch, one layer
    per concern, and reports with every layer green.
 7. **Review and verify.** You own the worktree's app. Before a run with
@@ -152,7 +160,13 @@ from earlier phases that bear on its job.
    `waived` as `[{ file, title, reason }]` for findings Joey or the team
    already settled, so they are not raised again. It reviews each layer
    against its base and attacks the whole stack against the default branch,
-   challenges each serious finding, and only then runs QA and design review.
+   challenges each serious finding, and runs QA every round: headless while
+   any finding stands, and with Chrome and design review only once none
+   does, so a `ui: true` stack gets its Chrome checks once, in the final
+   round. After design has approved the UI, run a round whose fixes leave
+   the UI unchanged with `ui: false`. Before a brief tells reviewers or QA
+   what they will see in the dev database, or how to reach a state there,
+   query that database and say in the brief what is and isn't there.
    Before each round, confirm the bottom layer still sits on the default
    branch and the worktree is on the top layer (`gh stack view --json`,
    `git branch --show-current`). Brief round 1 to trace every AC bullet to
@@ -198,7 +212,10 @@ from earlier phases that bear on its job.
    Your part is the stack, through `gh stack`; you never merge, retarget a
    PR, force-push outside `gh stack`, or push to the default branch. Once
    Joey has answered the hand-off's questions, stop your app and set your
-   status to Done.
+   status to Done. When a chief of staff launched you, tell it you are Done
+   and end there: the work after hand-off (retargeting, the teardown dry
+   run, a follow-up draft Joey asks for) is the chief of staff's, so Joey can
+   close your session.
 
 Scale the loop to the change. A copy fix skips research, design and
 security; a backend-only change skips design. Say which phases you skipped
@@ -222,7 +239,9 @@ Decide on Joey's behalf by default. Stop and ask him when:
 
 Before asking, check whether an available upgrade or existing tool removes
 the crossroads. Ask with a recommendation, the alternatives, and what each
-one costs. Brief the researcher first when facts would settle it. When a
+one costs. When the ask is for Joey to run a command, read what it runs (the
+seeder, script or migration it calls) and name what it will produce before
+you hand it over. Brief the researcher first when facts would settle it. When a
 chief of staff launched you, every question for Joey goes in your status
 file, and the chief of staff brings it to him and his answer back; keep
 working on whatever the question does not block.
@@ -275,6 +294,12 @@ acknowledged: <every standing ruling and answer you hold, by number>
 ## Follow-ups
 - <one line: what, and why>
 ```
+
+Read the clock with `date -u +%Y-%m-%dT%H:%MZ` in the same turn as every
+time you write, in this file, a ruling or a ticket comment; a stamp is a
+time you have just read. When a chief of staff launched you, message it
+every time this file changes, at the session name your brief gives: its own
+check-in is only a fallback.
 
 A question stays under **Questions for Joey** until its answer reaches you,
 then moves to **Answered**. A standing ruling or answer you have applied

@@ -116,7 +116,9 @@ first collision:
 2. **Kickoff.** Post a kickoff comment on each approved ticket: the phase to
    pick up at, the deadline, the facts you checked with the commit you
    checked them at, the writes Joey approved, and the decision log so far.
-   Done when every ticket about to launch has one.
+   Put an AC line Joey adds or changes into the ticket's Acceptance Criteria
+   itself; the kickoff comment only records it. Done when every ticket
+   about to launch has one.
 3. **Launch.** Launch only into a free slot under the ceiling, and check
    `git worktree list` first so a launch never runs twice. Run
    `feature <worktree> "$(cat <brief-file>)"` from your pane, naming the
@@ -126,7 +128,8 @@ first collision:
      decision log
    - the phase to pick up at, and the deadline
    - that you are its chief of staff, so its questions for Joey and its
-     status go in its status file
+     status go in its status file, and your session name (`ListAgents`
+     shows it), which it messages every time that file changes
    - the shared-resource rules above and every standing ruling, by number
    - the follow-up rule: possible follow-ups are one line each in the status
      file and the hand-off, and the owner drafts one only when Joey asks
@@ -137,10 +140,10 @@ first collision:
    runs this step. Read every live status file and
    `gh pr list --state open`. Each worktree gets one line: phase, blocker,
    whether it needs Joey. A status file unchanged for 30 minutes, with its
-   pane idle and no test run in its worktree, gets a nudge. Check every 10
-   minutes while Joey is around and every 15 when he is away or a pane shows
-   his usage limit past about 80%; stop when every worktree is waiting on
-   Joey, and tell him why. Grant the browser to one worktree that wants it,
+   pane idle and no test run in its worktree, gets a nudge. Product managers
+   message you on every change, so the check-in is a fallback every 30
+   minutes; stop it when every worktree is waiting on Joey, tell him why,
+   and schedule it again when work resumes. Grant the browser to one worktree that wants it,
    in deadline order. When the holder's session has ended
    (`herdr agent get` shows it gone), clear its lease. When its status file
    is only stale, ask the holder, and clear the lease only on its written
@@ -184,7 +187,9 @@ first collision:
    Done, run teardown's dry run in the one form the facts allow, check that
    its plan names only that worktree's tab, branches and databases, and give
    Joey the exact `teardown <worktree>` command, with anything the plan says
-   is still running. Then launch the next ticket into the slot.
+   is still running. A product manager's session ends at Done, so the work
+   after its hand-off (retargeting, this dry run, a follow-up draft Joey
+   asks for) is yours. Then launch the next ticket into the slot.
 10. **Retro.** Each product manager posts Joey's approved retro edits on its
     ticket as one comment. Gather them across worktrees, merge overlapping
     edits into one wording per rule, and apply them in one pass with the

@@ -30,7 +30,9 @@ The product manager owns this worktree's app: it starts it before you run
 and stops it after. Work against the app as you find it. Leave every
 process alone: this worktree's, which belongs to the product manager, and
 every other worktree's processes, ports and databases. If the host stops
-answering, stop and report that.
+answering, stop and report that. The product manager alone writes its
+status file and its `browser:` line: when your browser work ends, say so in
+your report, and it releases the lease.
 
 ## Who you work with
 
@@ -55,6 +57,11 @@ answering, stop and report that.
    - every state: empty, loading (the placeholder the app already uses for
      late data), partial, error, signed out, no permission, success
    - layout at phone, tablet and desktop widths, in light and dark
+   - for a layout that may not fit (a tile at TV size, a control added to an
+     existing row): the space it has and the worst case the data allows
+     (the most rows, the longest wrapped line), measured in the running app
+     at the narrowest width that shows it, and the fallback with its
+     measured size
    - the exact copy for every label, button, empty state and error
    - keyboard, focus order and screen-reader behaviour
    - what is deliberately out of scope
