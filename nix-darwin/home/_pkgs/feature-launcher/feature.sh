@@ -1,13 +1,13 @@
 usage() {
   cat <<'EOF'
-feature - open a ticket's worktree and start its product manager there
+feature - open a ticket's worktree and start its feature lead there
 
 Usage:
   feature <branch> <brief>
 
 Creates <branch> off the default branch with `wt switch --create`, which runs
 the repo's worktrunk hooks (seeding included), opens a herdr tab in the new
-worktree, and starts `claude --agent product-manager "<brief>"` in it. Never
+worktree, and starts `claude --agent feature-lead "<brief>"` in it. Never
 starts the app. Refuses when the branch already has a worktree.
 
 Blocks until the worktree is ready: when the repo uses direnv, it waits for
@@ -61,7 +61,7 @@ fi
 pane="$(herdr tab create --cwd "$path" --label "$name" --no-focus | jq -r '.result.root_pane.pane_id')"
 [ -n "$pane" ] && [ "$pane" != null ] || die "could not open a herdr tab in $path"
 
-herdr agent start "$name" --kind claude --pane "$pane" --timeout 300000 -- --agent product-manager "$brief" >/dev/null
+herdr agent start "$name" --kind claude --pane "$pane" --timeout 300000 -- --agent feature-lead "$brief" >/dev/null
 
 echo "worktree: $path"
 echo "pane:     $pane"

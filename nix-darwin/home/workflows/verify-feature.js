@@ -93,13 +93,13 @@ const RUNNER_RULE =
   "finding turns on it, after the facts' overlap check comes back empty. When another run is live, wait and retry once; if it is still " +
   'live, prove the finding from the code and say which run you could not make.'
 const APP_RULE =
-  '\n\nThe app is already running at the worktree\'s host, and the product manager owns it: work against it as you find it, and leave ' +
+  '\n\nThe app is already running at the worktree\'s host, and the feature lead owns it: work against it as you find it, and leave ' +
   "every process alone, this worktree's and every other worktree's, with their ports and databases. If the host stops answering, " +
   'stop and report that.'
 const HEADLESS_RULE =
   '\n\nThis run is headless: no app is running and no browser is granted. Prove every criterion with tests and probes against the ' +
   "worktree's test database, and leave every process alone, this worktree's and every other worktree's, with their ports and databases. " +
-  'An AC that only a browser can prove goes in your report as unverified, for the product manager.'
+  'An AC that only a browser can prove goes in your report as unverified, for the feature lead.'
 const QA_RULE = ui ? APP_RULE : HEADLESS_RULE
 
 const lenses = await pipeline(

@@ -5,6 +5,8 @@ disallowedTools:
   - Edit
   - Write
   - NotebookEdit
+model: sonnet
+effort: high
 ---
 
 # Code reviewer

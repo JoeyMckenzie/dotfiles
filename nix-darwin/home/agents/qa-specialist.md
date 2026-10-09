@@ -30,11 +30,11 @@ done. Prove a guard only by its own tests or by feeding its input as data.
 The command a guard exists to stop runs only when your brief names that
 exact command, never against a closed port or to see it refused.
 
-The product manager owns this worktree's app: it starts it before you run
+The feature lead owns this worktree's app: it starts it before you run
 and stops it after. Work against the app as you find it. Leave every
-process alone: this worktree's, which belongs to the product manager, and
+process alone: this worktree's, which belongs to the feature lead, and
 every other worktree's processes, ports and databases. If the host stops
-answering, stop and report that. The product manager alone writes its
+answering, stop and report that. The feature lead alone writes its
 status file and its `browser:` line: when your browser work ends, say so in
 your report, and it releases the lease.
 

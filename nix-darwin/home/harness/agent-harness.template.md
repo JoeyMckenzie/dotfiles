@@ -131,8 +131,8 @@ database.
 
 ## Coordination
 
-- Capacity: `<how many feature product managers can run at once on this machine, and what counts as one>`
-- Status file: `<the path, from each worktree's root, where its product manager keeps its status; gitignored>`
+- Capacity: `<how many feature leads can run at once on this machine, and what counts as one>`
+- Status file: `<the path, from each worktree's root, where its feature lead keeps its status; gitignored>`
 - State file: `<the path, in the main checkout, where the chief of staff keeps its state; gitignored>`
 - Merge settings: `<whether the host deletes a merged branch and retargets the PR above it, auto-merge, the merge method>`
 - Words that trip a hook: `<each hook that reads a whole command, and the words in any argument, quoted prose included, that trip it>`
