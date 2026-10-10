@@ -38,6 +38,7 @@
     (callPackage ./_pkgs/ldcli.nix { })
     (callPackage ./_pkgs/backlog.nix { })
     (callPackage ./_pkgs/feature-launcher { })
+    (callPackage ./_pkgs/tavily-cli.nix { })
     rustfs
     graphite-cli
     inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default

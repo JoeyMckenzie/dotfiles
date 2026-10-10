@@ -38,6 +38,8 @@
       "typesafe-api-key" = { };
 
       "givebutter-api-key" = { };
+
+      "tavily-api-key" = { };
     };
 
     templates."secrets.zsh" = {
@@ -49,6 +51,7 @@
         export FILAMENT_BLUEPRINT_KEY=${config.sops.placeholder."filament-blueprint-key"}
         export TYPESAFE_API_KEY=${config.sops.placeholder."typesafe-api-key"}
         export GIVEBUTTER_API_KEY='${config.sops.placeholder."givebutter-api-key"}'
+        export TAVILY_API_KEY=${config.sops.placeholder."tavily-api-key"}
       '';
     };
   };

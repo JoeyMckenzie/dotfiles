@@ -83,6 +83,7 @@ let
       upstream
       ./skills/_local
       "${inputs.obsidian-skills}/skills"
+      "${inputs.tavily-skills}/skills"
     ];
   };
 in

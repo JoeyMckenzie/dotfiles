@@ -809,6 +809,7 @@
         "ponytail-skills": "ponytail-skills",
         "rust-overlay": "rust-overlay_2",
         "sops-nix": "sops-nix",
+        "tavily-skills": "tavily-skills",
         "tuicr": "tuicr",
         "typesafe-ai": "typesafe-ai",
         "vercel-agent-skills": "vercel-agent-skills",
@@ -1004,6 +1005,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tavily-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788534966,
+        "narHash": "sha256-bsNT2xRbA3eXPgBibHPPnKqMnItHr0/eKI5p0HyijS8=",
+        "owner": "tavily-ai",
+        "repo": "skills",
+        "rev": "778122e5f9c680f541eeceda5a5b36405eb7980c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tavily-ai",
+        "repo": "skills",
         "type": "github"
       }
     },

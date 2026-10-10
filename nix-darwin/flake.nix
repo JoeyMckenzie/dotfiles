@@ -100,6 +100,11 @@
       flake = false;
     };
 
+    tavily-skills = {
+      url = "github:tavily-ai/skills";
+      flake = false;
+    };
+
     typesafe-ai = {
       url = "github:typesafe-ai/skills";
       flake = false;
