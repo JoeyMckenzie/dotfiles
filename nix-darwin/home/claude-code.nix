@@ -16,11 +16,8 @@
 
       permissions.allow = [
         "Edit(~/.config/nix-darwin/home/agents/**)"
-        "Write(~/.config/nix-darwin/home/agents/**)"
         "Edit(~/.config/nix-darwin/home/workflows/**)"
-        "Write(~/.config/nix-darwin/home/workflows/**)"
         "Edit(~/.config/nix-darwin/home/harness/**)"
-        "Write(~/.config/nix-darwin/home/harness/**)"
       ];
 
       hooks = {
